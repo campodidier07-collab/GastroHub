@@ -11,7 +11,8 @@ const ICONOS_CAT = {
 };
 
 /**
- * Sidebar empresarial colapsable con iconografía Font Awesome unificada.
+ * Sidebar operativa del Workspace SaaS (/dashboard y /catalogo).
+ * Exclusiva para la consola interna de trabajo, con enlace inferior para volver a la portada (/).
  */
 const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) => {
     const ubicacion = useLocation();
@@ -52,13 +53,6 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
             activo: ubicacion.pathname === '/catalogo' && favoritasActiva,
             badge: totalFavoritas,
         },
-        {
-            etiqueta: 'Product Overview',
-            ruta: '/',
-            icono: 'fa-solid fa-wand-magic-sparkles',
-            activo: ubicacion.pathname === '/',
-            badge: null,
-        },
     ];
 
     const categoriasMenu = ['Plato Fuerte', 'Entrada', 'Postre', 'Ensalada', 'Sopa', 'Bebida'];
@@ -75,7 +69,7 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                 }}
             >
                 <div className="flex flex-col gap-6 p-3.5 overflow-y-auto">
-                    {/* Brand */}
+                    {/* Identidad del Workspace */}
                     <div className="flex items-center justify-between px-1.5 pt-1">
                         <Link
                             to="/dashboard"
@@ -109,7 +103,7 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                                         </span>
                                     </div>
                                     <span className="text-[11px] truncate" style={{ color: 'var(--texto-muted)' }}>
-                                        Culinary SaaS Platform
+                                        Consola Operativa
                                     </span>
                                 </div>
                             )}
@@ -128,14 +122,14 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                         )}
                     </div>
 
-                    {/* Plataforma */}
+                    {/* Módulos de Trabajo */}
                     <div className="flex flex-col gap-1">
                         {mostrarTexto && (
                             <span
                                 className="px-2.5 pb-1 text-[10px] font-bold uppercase tracking-wider"
                                 style={{ color: 'var(--texto-muted)' }}
                             >
-                                Plataforma
+                                Módulos del Sistema
                             </span>
                         )}
                         {itemsPrincipales.map((item) => (
@@ -218,25 +212,28 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                     </div>
                 </div>
 
-                {/* Estado + Colapsar */}
+                {/* Pie de Sidebar: Volver a Portada + Colapsar */}
                 <div className="p-3 border-t flex flex-col gap-2" style={{ borderColor: 'var(--borde-sutil)' }}>
-                    {mostrarTexto && (
-                        <div
-                            className="p-3 rounded-xl border flex items-center gap-2.5"
-                            style={{ background: 'var(--bg-card)', borderColor: 'var(--borde-sutil)' }}
-                        >
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                            <div className="min-w-0 flex-1">
-                                <p className="text-[11px] font-semibold truncate" style={{ color: 'var(--texto-primario)' }}>
-                                    Motor API Operativo
-                                </p>
-                                <p className="text-[10px] truncate" style={{ color: 'var(--texto-muted)' }}>
-                                    Sincronización en tiempo real
-                                </p>
-                            </div>
-                            <i className="fa-solid fa-wave-square text-xs shrink-0" style={{ color: 'var(--color-exito)' }} aria-hidden="true" />
+                    <Link
+                        to="/"
+                        onClick={() => esMovil && alCerrarMovil?.()}
+                        title={!mostrarTexto ? 'Volver a la Portada Principal' : undefined}
+                        className={`w-full py-2 px-3 rounded-xl text-xs font-medium flex items-center ${mostrarTexto ? 'justify-between' : 'justify-center'} transition-colors`}
+                        style={{
+                            textDecoration: 'none',
+                            color: 'var(--texto-secundario)',
+                            background: 'var(--bg-card)',
+                            border: '1px solid var(--borde-sutil)',
+                        }}
+                    >
+                        <div className="flex items-center gap-2.5">
+                            <i className="fa-solid fa-house text-xs" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
+                            {mostrarTexto && <span>Portada Principal</span>}
                         </div>
-                    )}
+                        {mostrarTexto && (
+                            <i className="fa-solid fa-arrow-up-right-from-square text-[10px]" style={{ color: 'var(--texto-muted)' }} aria-hidden="true" />
+                        )}
+                    </Link>
 
                     {!esMovil && (
                         <button

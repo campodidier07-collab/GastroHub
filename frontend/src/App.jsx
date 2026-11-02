@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './context/ThemeContext';
 import { RecetaProvider, useRecetas } from './context/RecetaContext';
@@ -12,9 +12,11 @@ import Modal from './components/ui/Modal';
 import FormularioReceta from './components/recetas/FormularioReceta';
 
 /**
- * Shell interno con Sidebar colapsable, Navbar premium, rutas SaaS y modal global de creación.
+ * VISTA 2 — WORKSPACE SHELL (/dashboard y /catalogo)
+ * Se activa cuando el usuario ingresa al sistema desde la portada principal (/).
+ * Incluye la Sidebar colapsable, Navbar superior y modal global de creación.
  */
-const AppShell = () => {
+const WorkspaceShell = ({ children }) => {
     const [sidebarColapsada, setSidebarColapsada] = useState(false);
     const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
     const [modalGlobalCrear, setModalGlobalCrear] = useState(false);
@@ -42,7 +44,6 @@ const AppShell = () => {
             className="min-h-screen flex w-full"
             style={{ background: 'var(--bg-principal)', color: 'var(--texto-primario)' }}
         >
-            {/* Sidebar Lateral Colapsable */}
             <Sidebar
                 colapsada={sidebarColapsada}
                 alAlternarColapso={() => setSidebarColapsada((prev) => !prev)}
@@ -50,7 +51,6 @@ const AppShell = () => {
                 alCerrarMovil={() => setMenuMovilAbierto(false)}
             />
 
-            {/* Columna Principal: Navbar + Contenido + Footer */}
             <div className="flex-1 flex flex-col min-w-0">
                 <Navbar
                     alAbrirMenuMovil={() => setMenuMovilAbierto(true)}
@@ -61,12 +61,7 @@ const AppShell = () => {
                 />
 
                 <main className="flex-1">
-                    <Routes>
-                        <Route path="/" element={<InicioView />} />
-                        <Route path="/dashboard" element={<DashboardView />} />
-                        <Route path="/catalogo" element={<CatalogoView />} />
-                        <Route path="*" element={<DashboardView />} />
-                    </Routes>
+                    {children}
                 </main>
 
                 <footer
@@ -79,7 +74,7 @@ const AppShell = () => {
                 >
                     <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
                         <span className="font-semibold" style={{ color: 'var(--texto-secundario)' }}>
-                            GastroHub Enterprise · Culinary Management SaaS
+                            GastroHub Enterprise · Consola Operativa SaaS
                         </span>
                         <span>
                             Desarrollado por <strong style={{ color: 'var(--texto-primario)' }}>Didier Puentes</strong> · MongoDB · Express · React 19 · Tailwind v4
@@ -88,7 +83,6 @@ const AppShell = () => {
                 </footer>
             </div>
 
-            {/* Modal Global para crear receta desde cualquier vista */}
             <Modal
                 abierto={modalGlobalCrear}
                 alCerrar={() => setModalGlobalCrear(false)}
@@ -107,6 +101,11 @@ const AppShell = () => {
     );
 };
 
+/**
+ * Enrutador raíz estructurado en 2 experiencias diferenciadas:
+ * 1. `/` → Portada principal (Product Overview) de pantalla completa sin Sidebar.
+ * 2. `/dashboard` y `/catalogo` → Consola Operativa con Sidebar y Navbar.
+ */
 const App = () => {
     return (
         <ThemeProvider>
@@ -127,7 +126,32 @@ const App = () => {
                             },
                         }}
                     />
-                    <AppShell />
+
+                    <Routes>
+                        {/* Etapa 1: Portada Principal / Product Overview independiente */}
+                        <Route path="/" element={<InicioView />} />
+
+                        {/* Etapa 2: Consola Operativa SaaS con Sidebar y Navbar */}
+                        <Route
+                            path="/dashboard"
+                            element={(
+                                <WorkspaceShell>
+                                    <DashboardView />
+                                </WorkspaceShell>
+                            )}
+                        />
+                        <Route
+                            path="/catalogo"
+                            element={(
+                                <WorkspaceShell>
+                                    <CatalogoView />
+                                </WorkspaceShell>
+                            )}
+                        />
+
+                        {/* Cualquier ruta desconocida redirige a la Portada Principal */}
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
                 </RecetaProvider>
             </BrowserRouter>
         </ThemeProvider>
