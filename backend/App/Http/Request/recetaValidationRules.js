@@ -1,6 +1,19 @@
 const mongoose = require('mongoose');
+const { CATEGORIAS_VALIDAS, DIFICULTADES_VALIDAS } = require('../../Models/Receta');
 
-const CAMPOS_RECETA_PERMITIDOS = ['titulo', 'tiempo', 'ingredientes', 'pasos'];
+const CAMPOS_RECETA_PERMITIDOS = [
+    'titulo',
+    'tiempo',
+    'descripcion',
+    'categoria',
+    'dificultad',
+    'porciones',
+    'calorias',
+    'imagenUrl',
+    'favorito',
+    'ingredientes',
+    'pasos'
+];
 const CAMPOS_INGREDIENTE_PERMITIDOS = ['nombre', 'cantidad', 'unidad'];
 
 const esObjetoPlano = (valor) => (
@@ -37,7 +50,7 @@ const validarIngredientes = (ingredientes) => {
 
         if (
             Object.prototype.hasOwnProperty.call(ingrediente, 'cantidad')
-            && (typeof ingrediente.cantidad !== 'number' || Number.isNaN(ingrediente.cantidad))
+            && (typeof ingrediente.cantidad !== 'number' || Number.isNaN(ingrediente.cantidad) || ingrediente.cantidad < 0)
         ) {
             return 'La cantidad de cada ingrediente debe ser numerica';
         }
@@ -97,18 +110,72 @@ const validarPayloadReceta = (payload, opciones = {}) => {
         }
     }
 
-    if (
-        Object.prototype.hasOwnProperty.call(payload, 'titulo')
-        && typeof payload.titulo !== 'string'
-    ) {
-        return { error: 'El campo titulo debe ser texto' };
+    if (Object.prototype.hasOwnProperty.call(payload, 'titulo')) {
+        if (typeof payload.titulo !== 'string' || !payload.titulo.trim()) {
+            return { error: 'El campo titulo debe ser texto no vacio' };
+        }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(payload, 'tiempo')) {
+        if (typeof payload.tiempo !== 'string' || !payload.tiempo.trim()) {
+            return { error: 'El campo tiempo debe ser texto no vacio' };
+        }
     }
 
     if (
-        Object.prototype.hasOwnProperty.call(payload, 'tiempo')
-        && typeof payload.tiempo !== 'string'
+        Object.prototype.hasOwnProperty.call(payload, 'descripcion')
+        && typeof payload.descripcion !== 'string'
     ) {
-        return { error: 'El campo tiempo debe ser texto' };
+        return { error: 'El campo descripcion debe ser texto' };
+    }
+
+    if (Object.prototype.hasOwnProperty.call(payload, 'categoria')) {
+        if (typeof payload.categoria !== 'string' || !CATEGORIAS_VALIDAS.includes(payload.categoria)) {
+            return { error: `La categoria debe ser una de: ${CATEGORIAS_VALIDAS.join(', ')}` };
+        }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(payload, 'dificultad')) {
+        if (typeof payload.dificultad !== 'string' || !DIFICULTADES_VALIDAS.includes(payload.dificultad)) {
+            return { error: `La dificultad debe ser una de: ${DIFICULTADES_VALIDAS.join(', ')}` };
+        }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(payload, 'porciones')) {
+        if (
+            typeof payload.porciones !== 'number'
+            || Number.isNaN(payload.porciones)
+            || payload.porciones < 1
+        ) {
+            return { error: 'El campo porciones debe ser un numero mayor o igual a 1' };
+        }
+    }
+
+    if (
+        Object.prototype.hasOwnProperty.call(payload, 'calorias')
+        && payload.calorias !== null
+    ) {
+        if (
+            typeof payload.calorias !== 'number'
+            || Number.isNaN(payload.calorias)
+            || payload.calorias < 0
+        ) {
+            return { error: 'El campo calorias debe ser un numero mayor o igual a 0' };
+        }
+    }
+
+    if (
+        Object.prototype.hasOwnProperty.call(payload, 'imagenUrl')
+        && typeof payload.imagenUrl !== 'string'
+    ) {
+        return { error: 'El campo imagenUrl debe ser texto' };
+    }
+
+    if (
+        Object.prototype.hasOwnProperty.call(payload, 'favorito')
+        && typeof payload.favorito !== 'boolean'
+    ) {
+        return { error: 'El campo favorito debe ser booleano' };
     }
 
     if (Object.prototype.hasOwnProperty.call(payload, 'ingredientes')) {
@@ -127,13 +194,18 @@ const validarPayloadReceta = (payload, opciones = {}) => {
 
     const payloadSaneado = {};
     for (const campo of llavesPayload) {
-        payloadSaneado[campo] = payload[campo];
+        if (typeof payload[campo] === 'string') {
+            payloadSaneado[campo] = payload[campo].trim();
+        } else {
+            payloadSaneado[campo] = payload[campo];
+        }
     }
 
     return { payloadSaneado };
 };
 
 module.exports = {
+    CAMPOS_RECETA_PERMITIDOS,
     esObjectIdValido,
     validarPayloadReceta
 };
