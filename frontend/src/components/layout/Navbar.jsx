@@ -1,149 +1,418 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+    Search,
+    Sun,
+    Moon,
+    Bell,
+    Plus,
+    Menu,
+    ChevronRight,
+    Sparkles,
+    Clock,
+    Star,
+    CheckCircle2,
+    User,
+    LayoutDashboard,
+    BookOpen,
+} from 'lucide-react';
 import { useRecetas } from '../../context/RecetaContext';
+import { useTheme } from '../../context/ThemeContext';
 
 /**
- * Navbar principal de GastroHub.
- * Contiene el logo, indicadores rápidos del catálogo y menú responsivo.
+ * Navbar superior premium estilo Stripe / Vercel / Linear.
+ * Incluye Breadcrumb contextual, Buscador instantáneo con Popover,
+ * Switch de Tema Claro/Oscuro, Centro de Notificaciones y Perfil Ejecutivo.
  */
-const Navbar = () => {
-    const [menuAbierto, setMenuAbierto] = useState(false);
+const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
+    const [busquedaRapida, setBusquedaRapida] = useState('');
+    const [popoverBusqueda, setPopoverBusqueda] = useState(false);
+    const [popoverNotificaciones, setPopoverNotificaciones] = useState(false);
+    const [popoverPerfil, setPopoverPerfil] = useState(false);
+
     const ubicacion = useLocation();
+    const navegar = useNavigate();
     const { listaRecetas } = useRecetas();
+    const { esOscuro, alternarTema } = useTheme();
 
-    const totalRecetas = listaRecetas.length;
-    const totalFavoritas = listaRecetas.filter((r) => r.favorito).length;
+    const refBusqueda = useRef(null);
+    const refNotif = useRef(null);
+    const refPerfil = useRef(null);
 
-    const esRutaActiva = (ruta) => ubicacion.pathname === ruta;
+    // Cerrar popovers al hacer clic fuera
+    useEffect(() => {
+        const manejarClickFuera = (e) => {
+            if (refBusqueda.current && !refBusqueda.current.contains(e.target)) {
+                setPopoverBusqueda(false);
+            }
+            if (refNotif.current && !refNotif.current.contains(e.target)) {
+                setPopoverNotificaciones(false);
+            }
+            if (refPerfil.current && !refPerfil.current.contains(e.target)) {
+                setPopoverPerfil(false);
+            }
+        };
+        document.addEventListener('mousedown', manejarClickFuera);
+        return () => document.removeEventListener('mousedown', manejarClickFuera);
+    }, []);
 
-    const enlacesNav = [
-        { etiqueta: 'Inicio', ruta: '/' },
-        { etiqueta: 'Catálogo Gastronómico', ruta: '/catalogo' },
-    ];
+    // Atajo de teclado Ctrl+K / Cmd+K para enfocar el buscador global
+    const inputBusquedaRef = useRef(null);
+    useEffect(() => {
+        const manejarAtajo = (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                inputBusquedaRef.current?.focus();
+                setPopoverBusqueda(true);
+            }
+        };
+        window.addEventListener('keydown', manejarAtajo);
+        return () => window.removeEventListener('keydown', manejarAtajo);
+    }, []);
+
+    const resultadosInstantaneos = busquedaRapida.trim()
+        ? listaRecetas
+            .filter((r) =>
+                r.titulo?.toLowerCase().includes(busquedaRapida.toLowerCase()) ||
+                r.categoria?.toLowerCase().includes(busquedaRapida.toLowerCase()) ||
+                r.ingredientes?.some((i) => i.nombre?.toLowerCase().includes(busquedaRapida.toLowerCase()))
+            )
+            .slice(0, 5)
+        : listaRecetas.slice(0, 4);
+
+    const nombreVistaActual = {
+        '/': 'Overview & Presentación',
+        '/dashboard': 'Dashboard Ejecutivo',
+        '/catalogo': 'Catálogo & Fichas Técnicas',
+    }[ubicacion.pathname] || 'Plataforma';
+
+    const manejarSubmitBusqueda = (e) => {
+        e.preventDefault();
+        setPopoverBusqueda(false);
+        if (busquedaRapida.trim()) {
+            navegar(`/catalogo?q=${encodeURIComponent(busquedaRapida.trim())}`);
+        } else {
+            navegar('/catalogo');
+        }
+    };
 
     return (
         <header
-            className="sticky top-0 z-40 w-full"
+            className="sticky top-0 z-30 w-full h-16 px-4 sm:px-6 flex items-center justify-between gap-4 border-b"
             style={{
-                background: 'rgba(250, 247, 242, 0.90)',
+                background: 'var(--bg-glass)',
                 backdropFilter: 'blur(14px)',
-                borderBottom: '1px solid var(--color-borde)',
-                boxShadow: '0 2px 20px rgba(31, 29, 26, 0.04)',
+                borderColor: 'var(--borde-sutil)',
             }}
         >
-            <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-                {/* Identidad de marca GastroHub */}
-                <Link to="/" className="flex items-center gap-2.5" style={{ textDecoration: 'none' }}>
-                    <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm"
+            {/* Izquierda: Botón menú móvil + Breadcrumb contextual */}
+            <div className="flex items-center gap-3 min-w-0">
+                <button
+                    type="button"
+                    onClick={alAbrirMenuMovil}
+                    className="lg:hidden w-9 h-9 rounded-xl flex items-center justify-center border cursor-pointer"
+                    style={{
+                        background: 'var(--bg-card)',
+                        borderColor: 'var(--borde-sutil)',
+                        color: 'var(--texto-primario)',
+                    }}
+                    aria-label="Abrir navegación"
+                >
+                    <Menu className="w-4 h-4" />
+                </button>
+
+                <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs min-w-0">
+                    <Link
+                        to="/dashboard"
+                        className="font-semibold hidden sm:inline hover:underline"
+                        style={{ color: 'var(--texto-secundario)', textDecoration: 'none' }}
+                    >
+                        GastroHub
+                    </Link>
+                    <ChevronRight className="w-3.5 h-3.5 hidden sm:inline shrink-0" style={{ color: 'var(--texto-muted)' }} />
+                    <span className="font-bold truncate" style={{ color: 'var(--texto-primario)' }}>
+                        {nombreVistaActual}
+                    </span>
+                </nav>
+            </div>
+
+            {/* Centro: Command Search Bar (⌘K) */}
+            <div ref={refBusqueda} className="relative flex-1 max-w-md">
+                <form onSubmit={manejarSubmitBusqueda} className="relative flex items-center">
+                    <Search
+                        className="w-4 h-4 absolute left-3 pointer-events-none"
+                        style={{ color: 'var(--texto-muted)' }}
+                    />
+                    <input
+                        ref={inputBusquedaRef}
+                        type="search"
+                        value={busquedaRapida}
+                        onFocus={() => setPopoverBusqueda(true)}
+                        onChange={(e) => {
+                            setBusquedaRapida(e.target.value);
+                            setPopoverBusqueda(true);
+                        }}
+                        placeholder="Buscar receta, ingrediente o partida..."
+                        aria-label="Buscador global de recetas"
+                        className="w-full pl-9 pr-14 py-1.5 text-xs rounded-xl border transition-all outline-none"
                         style={{
-                            background: 'linear-gradient(135deg, var(--color-primario) 0%, var(--color-primario-hover) 100%)',
+                            background: 'var(--bg-input)',
+                            borderColor: popoverBusqueda ? 'var(--color-primario)' : 'var(--borde-sutil)',
+                            color: 'var(--texto-primario)',
+                            boxShadow: popoverBusqueda ? '0 0 0 3px var(--color-primario-suave)' : 'var(--sombra-sm)',
+                        }}
+                    />
+                    <kbd
+                        className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono-num rounded border absolute right-2 pointer-events-none"
+                        style={{
+                            background: 'var(--bg-secundario)',
+                            borderColor: 'var(--borde-sutil)',
+                            color: 'var(--texto-muted)',
                         }}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2.1}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26C17.81 13.47 19 11.38 19 9c0-3.87-3.13-7-7-7zM9 21h6" />
-                        </svg>
-                    </div>
-                    <div className="flex flex-col leading-none">
-                        <span className="text-lg font-extrabold tracking-tight" style={{ color: 'var(--color-texto-oscuro)' }}>
-                            Gastro<span style={{ color: 'var(--color-primario)' }}>Hub</span>
-                        </span>
-                        <span className="text-[10px] font-medium uppercase tracking-widest" style={{ color: 'var(--color-texto-medio)' }}>
-                            Culinary Suite
-                        </span>
-                    </div>
-                </Link>
+                        Ctrl K
+                    </kbd>
+                </form>
 
-                {/* Navegación Desktop */}
-                <div className="hidden md:flex items-center gap-3">
-                    <ul className="flex items-center gap-1 list-none">
-                        {enlacesNav.map(({ etiqueta, ruta }) => (
-                            <li key={ruta}>
-                                <Link
-                                    to={ruta}
-                                    className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200"
-                                    style={{
-                                        textDecoration: 'none',
-                                        color: esRutaActiva(ruta) ? 'var(--color-primario)' : 'var(--color-texto-medio)',
-                                        background: esRutaActiva(ruta) ? 'var(--color-salmon-claro)' : 'transparent',
-                                        fontWeight: esRutaActiva(ruta) ? 600 : 500,
-                                    }}
-                                >
-                                    {etiqueta}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-
-                    {totalRecetas > 0 && (
-                        <div
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border"
-                            style={{
-                                background: '#fff',
-                                borderColor: 'var(--color-borde)',
-                                color: 'var(--color-texto-medio)',
-                            }}
-                        >
-                            <span>🍽️ {totalRecetas}</span>
-                            <span style={{ color: 'var(--color-borde)' }}>|</span>
-                            <span style={{ color: 'var(--color-ambar)' }}>★ {totalFavoritas}</span>
-                        </div>
-                    )}
-
-                    <Link
-                        to="/catalogo"
-                        className="btn-primario"
-                        style={{ textDecoration: 'none' }}
+                {/* Popover de resultados rápidos */}
+                {popoverBusqueda && (
+                    <div
+                        className="absolute left-0 right-0 mt-2 rounded-2xl border p-2 z-50 animar-entrada"
+                        style={{
+                            background: 'var(--bg-elevado)',
+                            borderColor: 'var(--borde-fuerte)',
+                            boxShadow: 'var(--sombra-lg)',
+                        }}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                        Abrir Recetario
-                    </Link>
-                </div>
+                        <div className="flex items-center justify-between px-2.5 py-1.5">
+                            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--texto-muted)' }}>
+                                {busquedaRapida.trim() ? 'Resultados instantáneos' : 'Sugerencias del Catálogo'}
+                            </span>
+                            <Link
+                                to="/catalogo"
+                                onClick={() => setPopoverBusqueda(false)}
+                                className="text-[11px] font-semibold"
+                                style={{ color: 'var(--color-primario)', textDecoration: 'none' }}
+                            >
+                                Ver todo →
+                            </Link>
+                        </div>
 
-                {/* Botón menú móvil */}
+                        {resultadosInstantaneos.length > 0 ? (
+                            <div className="flex flex-col gap-0.5">
+                                {resultadosInstantaneos.map((receta) => (
+                                    <button
+                                        key={receta._id}
+                                        type="button"
+                                        onClick={() => {
+                                            setPopoverBusqueda(false);
+                                            navegar(`/catalogo?q=${encodeURIComponent(receta.titulo)}`);
+                                        }}
+                                        className="w-full px-2.5 py-2 rounded-xl text-left flex items-center justify-between gap-2 transition-colors cursor-pointer"
+                                        style={{ color: 'var(--texto-primario)' }}
+                                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                                    >
+                                        <div className="min-w-0">
+                                            <p className="text-xs font-semibold truncate">{receta.titulo}</p>
+                                            <p className="text-[11px] truncate" style={{ color: 'var(--texto-muted)' }}>
+                                                {receta.categoria || 'Plato Fuerte'} · {receta.tiempo}
+                                            </p>
+                                        </div>
+                                        {receta.favorito && (
+                                            <Star className="w-3.5 h-3.5 shrink-0 fill-amber-400 text-amber-400" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="px-3 py-4 text-xs text-center" style={{ color: 'var(--texto-muted)' }}>
+                                Sin coincidencias para &ldquo;{busquedaRapida}&rdquo;
+                            </p>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {/* Derecha: Acciones Globales, Tema, Notificaciones y Perfil */}
+            <div className="flex items-center gap-2 shrink-0">
+                {/* Botón de acción primaria rápida */}
+                {alAbrirCrearReceta && (
+                    <button
+                        type="button"
+                        onClick={alAbrirCrearReceta}
+                        className="btn-primario hidden sm:inline-flex py-1.5 px-3 text-xs"
+                    >
+                        <Plus className="w-4 h-4" strokeWidth={2.2} />
+                        <span>Nueva Ficha</span>
+                    </button>
+                )}
+
+                {/* Switcher Modo Claro / Modo Oscuro */}
                 <button
-                    className="md:hidden p-2 rounded-lg transition-colors"
-                    style={{ color: 'var(--color-texto-medio)' }}
-                    onClick={() => setMenuAbierto((prev) => !prev)}
-                    aria-label="Abrir menú"
+                    type="button"
+                    onClick={alternarTema}
+                    className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors cursor-pointer"
+                    style={{
+                        background: 'var(--bg-card)',
+                        borderColor: 'var(--borde-sutil)',
+                        color: 'var(--texto-primario)',
+                    }}
+                    title={esOscuro ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'}
+                    aria-label={esOscuro ? 'Activar modo claro' : 'Activar modo oscuro'}
                 >
-                    {menuAbierto ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                    {esOscuro ? (
+                        <Sun className="w-4 h-4 text-amber-400" strokeWidth={2} />
                     ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+                        <Moon className="w-4 h-4" strokeWidth={2} />
                     )}
                 </button>
-            </nav>
 
-            {/* Menú móvil desplegable */}
-            {menuAbierto && (
-                <div
-                    className="md:hidden px-4 pb-4 pt-2 flex flex-col gap-2 animar-entrada"
-                    style={{ borderTop: '1px solid var(--color-borde)' }}
-                >
-                    {enlacesNav.map(({ etiqueta, ruta }) => (
-                        <Link
-                            key={ruta}
-                            to={ruta}
-                            onClick={() => setMenuAbierto(false)}
-                            className="px-4 py-2.5 rounded-xl text-sm font-medium"
+                {/* Centro de Notificaciones */}
+                <div ref={refNotif} className="relative">
+                    <button
+                        type="button"
+                        onClick={() => setPopoverNotificaciones((p) => !p)}
+                        className="w-9 h-9 rounded-xl border flex items-center justify-center relative transition-colors cursor-pointer"
+                        style={{
+                            background: 'var(--bg-card)',
+                            borderColor: 'var(--borde-sutil)',
+                            color: 'var(--texto-primario)',
+                        }}
+                        aria-label="Abrir notificaciones"
+                    >
+                        <Bell className="w-4 h-4" strokeWidth={2} />
+                        <span
+                            className="w-2 h-2 rounded-full absolute top-2 right-2"
+                            style={{ background: 'var(--color-primario)' }}
+                        />
+                    </button>
+
+                    {popoverNotificaciones && (
+                        <div
+                            className="absolute right-0 mt-2 w-80 rounded-2xl border p-3 z-50 animar-entrada"
                             style={{
-                                textDecoration: 'none',
-                                color: esRutaActiva(ruta) ? 'var(--color-primario)' : 'var(--color-texto-medio)',
-                                background: esRutaActiva(ruta) ? 'var(--color-salmon-claro)' : 'transparent',
+                                background: 'var(--bg-elevado)',
+                                borderColor: 'var(--borde-fuerte)',
+                                boxShadow: 'var(--sombra-lg)',
                             }}
                         >
-                            {etiqueta}
-                        </Link>
-                    ))}
+                            <div className="flex items-center justify-between pb-2 mb-2 border-b" style={{ borderColor: 'var(--borde-sutil)' }}>
+                                <span className="text-xs font-bold" style={{ color: 'var(--texto-primario)' }}>
+                                    Actividad del Sistema
+                                </span>
+                                <span
+                                    className="px-2 py-0.5 rounded-full text-[10px] font-semibold"
+                                    style={{ background: 'var(--color-exito-bg)', color: 'var(--color-exito-texto)' }}
+                                >
+                                    En línea
+                                </span>
+                            </div>
+
+                            <div className="flex flex-col gap-2 text-xs">
+                                <div className="flex items-start gap-2.5 p-2 rounded-xl" style={{ background: 'var(--bg-secundario)' }}>
+                                    <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--color-exito)' }} />
+                                    <div>
+                                        <p className="font-semibold" style={{ color: 'var(--texto-primario)' }}>
+                                            Catálogo sincronizado ({listaRecetas.length} fichas)
+                                        </p>
+                                        <p className="text-[11px]" style={{ color: 'var(--texto-muted)' }}>
+                                            API RESTful respondiendo con validación activa.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-2.5 p-2 rounded-xl" style={{ background: 'var(--bg-secundario)' }}>
+                                    <Sparkles className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--color-primario)' }} />
+                                    <div>
+                                        <p className="font-semibold" style={{ color: 'var(--texto-primario)' }}>
+                                            Escalador de rendimiento activo
+                                        </p>
+                                        <p className="text-[11px]" style={{ color: 'var(--texto-muted)' }}>
+                                            Abre cualquier ficha para recalcular porciones en vivo.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            )}
+
+                {/* Perfil Ejecutivo */}
+                <div ref={refPerfil} className="relative">
+                    <button
+                        type="button"
+                        onClick={() => setPopoverPerfil((p) => !p)}
+                        className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-xl border transition-colors cursor-pointer"
+                        style={{
+                            background: 'var(--bg-card)',
+                            borderColor: 'var(--borde-sutil)',
+                        }}
+                        aria-label="Menú de perfil de usuario"
+                    >
+                        <div
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white"
+                            style={{ background: 'var(--gradiente-primario)' }}
+                        >
+                            DP
+                        </div>
+                        <div className="hidden md:flex flex-col text-left leading-tight">
+                            <span className="text-xs font-semibold" style={{ color: 'var(--texto-primario)' }}>
+                                Didier Puentes
+                            </span>
+                            <span className="text-[10px]" style={{ color: 'var(--texto-muted)' }}>
+                                Executive Chef
+                            </span>
+                        </div>
+                    </button>
+
+                    {popoverPerfil && (
+                        <div
+                            className="absolute right-0 mt-2 w-56 rounded-2xl border p-2 z-50 animar-entrada"
+                            style={{
+                                background: 'var(--bg-elevado)',
+                                borderColor: 'var(--borde-fuerte)',
+                                boxShadow: 'var(--sombra-lg)',
+                            }}
+                        >
+                            <div className="px-3 py-2 border-b mb-1" style={{ borderColor: 'var(--borde-sutil)' }}>
+                                <p className="text-xs font-bold" style={{ color: 'var(--texto-primario)' }}>Didier Puentes</p>
+                                <p className="text-[11px] truncate" style={{ color: 'var(--texto-muted)' }}>campodidier07@gmail.com</p>
+                            </div>
+                            <Link
+                                to="/dashboard"
+                                onClick={() => setPopoverPerfil(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium"
+                                style={{ color: 'var(--texto-primario)', textDecoration: 'none' }}
+                            >
+                                <LayoutDashboard className="w-4 h-4" />
+                                Dashboard Ejecutivo
+                            </Link>
+                            <Link
+                                to="/catalogo"
+                                onClick={() => setPopoverPerfil(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium"
+                                style={{ color: 'var(--texto-primario)', textDecoration: 'none' }}
+                            >
+                                <BookOpen className="w-4 h-4" />
+                                Gestionar Fichas Técnicas
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    alternarTema();
+                                    setPopoverPerfil(false);
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-left cursor-pointer"
+                                style={{ color: 'var(--texto-secundario)' }}
+                            >
+                                {esOscuro ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                                {esOscuro ? 'Modo Claro' : 'Modo Oscuro'}
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
         </header>
     );
 };

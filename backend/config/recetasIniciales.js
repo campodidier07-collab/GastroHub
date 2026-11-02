@@ -176,3 +176,4 @@ const RECETAS_INICIALES = [
 ];
 
 module.exports = { RECETAS_INICIALES };
+

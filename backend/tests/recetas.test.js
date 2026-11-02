@@ -145,3 +145,4 @@ test('DELETE /api/recetas/:id elimina la receta correctamente', async () => {
     const check = await fetch(`${baseUrl}/api/recetas/${idExistente}`);
     assert.equal(check.status, 404);
 });
+

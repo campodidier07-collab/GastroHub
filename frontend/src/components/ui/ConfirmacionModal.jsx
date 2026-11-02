@@ -1,50 +1,48 @@
+import { AlertTriangle, Trash2 } from 'lucide-react';
 import Modal from './Modal';
 
 /**
- * Modal de confirmación para acciones destructivas.
- * @param {boolean} abierto - Visibilidad del modal.
- * @param {Function} alCerrar - Callback al cancelar.
- * @param {Function} alConfirmar - Callback al confirmar.
- * @param {string} titulo - Título del modal.
- * @param {string} mensaje - Mensaje descriptivo de la acción.
- * @param {boolean} cargando - Si la acción está en progreso.
+ * Modal de confirmación para acciones destructivas con jerarquía visual clara.
  */
 const ConfirmacionModal = ({
     abierto,
     alCerrar,
     alConfirmar,
-    titulo = '¿Estás seguro?',
-    mensaje = 'Esta acción no se puede deshacer.',
+    titulo = 'Confirmar eliminación',
+    mensaje = 'Esta acción eliminará permanentemente el registro y no se puede deshacer.',
     cargando = false,
 }) => {
     return (
         <Modal abierto={abierto} alCerrar={alCerrar} titulo={titulo} tamano="sm">
-            {/* Ícono de advertencia */}
-            <div className="flex flex-col items-center text-center gap-4">
+            <div className="flex flex-col items-center text-center gap-4 py-2">
                 <div
-                    className="w-14 h-14 rounded-full flex items-center justify-center"
-                    style={{ background: '#fde8e8' }}
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                    style={{
+                        background: 'var(--color-error-bg)',
+                        color: 'var(--color-error)',
+                        border: '1px solid rgba(239, 68, 68, 0.25)',
+                    }}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#c0392b" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                    </svg>
+                    <AlertTriangle className="w-6 h-6" strokeWidth={2} />
                 </div>
 
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--color-texto-medio)' }}>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--texto-secundario)' }}>
                     {mensaje}
                 </p>
 
-                <div className="flex gap-3 pt-2 w-full justify-center">
-                    <button className="btn-secundario" onClick={alCerrar} disabled={cargando}>
+                <div className="flex items-center gap-3 pt-3 w-full justify-end border-t" style={{ borderColor: 'var(--borde-sutil)' }}>
+                    <button type="button" className="btn-secundario" onClick={alCerrar} disabled={cargando}>
                         Cancelar
                     </button>
                     <button
-                        className="btn-peligro px-5 py-2 text-sm font-semibold rounded-xl"
-                        style={{ fontSize: '0.875rem', padding: '0.55rem 1.25rem' }}
+                        type="button"
+                        className="btn-peligro px-4 py-2 text-xs font-semibold"
+                        style={{ padding: '0.55rem 1.1rem', fontSize: '0.8125rem' }}
                         onClick={alConfirmar}
                         disabled={cargando}
                     >
-                        {cargando ? 'Eliminando...' : 'Sí, eliminar'}
+                        <Trash2 className="w-4 h-4" strokeWidth={2} />
+                        {cargando ? 'Eliminando...' : 'Confirmar eliminación'}
                     </button>
                 </div>
             </div>

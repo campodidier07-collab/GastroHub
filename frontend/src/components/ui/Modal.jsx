@@ -1,66 +1,85 @@
 import { useEffect } from 'react';
+import { X } from 'lucide-react';
 
 /**
- * Modal reutilizable base.
- * @param {boolean} abierto - Si el modal está visible.
- * @param {Function} alCerrar - Callback para cerrar el modal.
- * @param {string} titulo - Título del encabezado del modal.
- * @param {React.ReactNode} children - Contenido dinámico del modal.
- * @param {string} tamano - Tamaño del modal: 'sm' | 'md' | 'lg' | 'xl'.
+ * Modal empresarial accesible (WCAG AA).
+ * Soporta cierre con tecla Escape, bloqueo de scroll y superficies adaptativas Dark/Light.
  */
-const Modal = ({ abierto, alCerrar, titulo, children, tamano = 'md' }) => {
-    // Bloquear scroll del body cuando el modal está abierto
+const Modal = ({ abierto, alCerrar, titulo, subtitulo, children, tamano = 'md' }) => {
     useEffect(() => {
-        if (abierto) {
-            document.body.style.overflow = 'hidden';
-        } else {
+        if (!abierto) return undefined;
+
+        document.body.style.overflow = 'hidden';
+
+        const manejarKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                alCerrar?.();
+            }
+        };
+
+        window.addEventListener('keydown', manejarKeyDown);
+        return () => {
             document.body.style.overflow = '';
-        }
-        return () => { document.body.style.overflow = ''; };
-    }, [abierto]);
+            window.removeEventListener('keydown', manejarKeyDown);
+        };
+    }, [abierto, alCerrar]);
 
     if (!abierto) return null;
 
     const anchoModal = {
-        sm: 'max-w-sm',
-        md: 'max-w-lg',
-        lg: 'max-w-2xl',
-        xl: 'max-w-4xl',
-    }[tamano] || 'max-w-lg';
+        sm: 'max-w-md',
+        md: 'max-w-xl',
+        lg: 'max-w-3xl',
+        xl: 'max-w-5xl',
+    }[tamano] || 'max-w-xl';
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ backgroundColor: 'rgba(61,61,61,0.35)', backdropFilter: 'blur(4px)' }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-titulo"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+            style={{ backgroundColor: 'rgba(9, 13, 22, 0.65)', backdropFilter: 'blur(6px)' }}
             onClick={alCerrar}
         >
             <div
-                className={`relative w-full ${anchoModal} tarjeta animar-entrada overflow-hidden`}
-                style={{ maxHeight: '90vh', overflowY: 'auto' }}
+                className={`relative w-full ${anchoModal} tarjeta animar-entrada flex flex-col`}
+                style={{
+                    maxHeight: '90vh',
+                    background: 'var(--bg-elevado)',
+                    borderColor: 'var(--borde-fuerte)',
+                    boxShadow: 'var(--sombra-lg)',
+                }}
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Encabezado */}
+                {/* Encabezado fijo */}
                 <div
-                    className="flex items-center justify-between px-6 py-4 border-b"
-                    style={{ borderColor: 'var(--color-borde)', background: 'var(--color-crema)' }}
+                    className="flex items-center justify-between px-6 py-4 border-b shrink-0"
+                    style={{ borderColor: 'var(--borde-sutil)', background: 'var(--bg-secundario)' }}
                 >
-                    <h2 className="text-lg font-semibold" style={{ color: 'var(--color-texto-oscuro)' }}>
-                        {titulo}
-                    </h2>
+                    <div>
+                        <h2 id="modal-titulo" className="text-base font-bold tracking-tight" style={{ color: 'var(--texto-primario)' }}>
+                            {titulo}
+                        </h2>
+                        {subtitulo && (
+                            <p className="text-xs mt-0.5" style={{ color: 'var(--texto-secundario)' }}>
+                                {subtitulo}
+                            </p>
+                        )}
+                    </div>
                     <button
+                        type="button"
                         onClick={alCerrar}
-                        className="p-1 rounded-lg transition-colors duration-150 hover:bg-gray-100"
-                        aria-label="Cerrar modal"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer"
+                        style={{ color: 'var(--texto-secundario)', background: 'var(--bg-card)', border: '1px solid var(--borde-sutil)' }}
+                        aria-label="Cerrar ventana modal"
                     >
-                        {/* Ícono X */}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X className="w-4 h-4" strokeWidth={2} />
                     </button>
                 </div>
 
-                {/* Contenido */}
-                <div className="px-6 py-5">
+                {/* Cuerpo desplazable */}
+                <div className="px-6 py-5 overflow-y-auto">
                     {children}
                 </div>
             </div>

@@ -1,6 +1,18 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import {
+    LayoutGrid,
+    Table2,
+    Plus,
+    BookOpen,
+    Star,
+    Layers,
+    Flame,
+    ChevronLeft,
+    ChevronRight,
+    AlertCircle,
+} from 'lucide-react';
 import { useRecetas } from '../../context/RecetaContext';
 import FiltrosRecetas from '../../components/recetas/FiltrosRecetas';
 import TablaRecetas from '../../components/recetas/TablaRecetas';
@@ -23,8 +35,8 @@ const FILTROS_INICIALES = {
 const REGISTROS_POR_PAGINA = 6;
 
 /**
- * Vista principal del Catálogo Gastronómico de GastroHub.
- * Incluye panel de KPIs, selector de vista (Tarjetas / Tabla), filtros multicriterio y modales CRUD.
+ * Vista empresarial del Catálogo Gastronómico de GastroHub.
+ * Con sincronización de query params, KPIs, selector de vista y tabla ordenable.
  */
 const CatalogoView = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -41,7 +53,10 @@ const CatalogoView = () => {
 
     const [filtros, setFiltros] = useState(() => ({
         ...FILTROS_INICIALES,
+        busqueda: searchParams.get('q') || '',
         categoria: searchParams.get('categoria') || '',
+        dificultad: searchParams.get('dificultad') || '',
+        soloFavoritas: searchParams.get('favoritas') === 'true',
     }));
     const [modoVista, setModoVista] = useState('grid');
     const [paginaActual, setPaginaActual] = useState(1);
@@ -59,11 +74,20 @@ const CatalogoView = () => {
         cargarRecetas();
     }, [cargarRecetas]);
 
+    // Sincronizar cambios desde la Sidebar o buscador global (URL query params)
     useEffect(() => {
         const catUrl = searchParams.get('categoria') || '';
-        if (catUrl) {
-            setFiltros((prev) => ({ ...prev, categoria: catUrl }));
-        }
+        const difUrl = searchParams.get('dificultad') || '';
+        const favUrl = searchParams.get('favoritas') === 'true';
+        const qUrl = searchParams.get('q') || '';
+
+        setFiltros((prev) => ({
+            ...prev,
+            categoria: catUrl,
+            dificultad: difUrl,
+            soloFavoritas: favUrl,
+            ...(qUrl ? { busqueda: qUrl } : {}),
+        }));
     }, [searchParams]);
 
     useEffect(() => {
@@ -71,22 +95,22 @@ const CatalogoView = () => {
     }, [filtros]);
 
     const actualizarFiltros = (nuevosFiltros) => {
-        setFiltros((prev) => ({ ...prev, ...nuevosFiltros }));
-        if (nuevosFiltros.categoria !== undefined) {
-            if (nuevosFiltros.categoria) {
-                setSearchParams({ categoria: nuevosFiltros.categoria });
-            } else {
-                setSearchParams({});
-            }
-        }
+        setFiltros((prev) => {
+            const Combinado = { ...prev, ...nuevosFiltros };
+            const params = {};
+            if (Combinado.categoria) params.categoria = Combinado.categoria;
+            if (Combinado.dificultad) params.dificultad = Combinado.dificultad;
+            if (Combinado.soloFavoritas) params.favoritas = 'true';
+            setSearchParams(params, { replace: true });
+            return Combinado;
+        });
     };
 
     const limpiarFiltros = () => {
         setFiltros(FILTROS_INICIALES);
-        setSearchParams({});
+        setSearchParams({}, { replace: true });
     };
 
-    // ── KPIs globales del catálogo ─────────────────────────────────────────
     const kpis = useMemo(() => {
         const total = listaRecetas.length;
         const favoritas = listaRecetas.filter((r) => r.favorito).length;
@@ -99,7 +123,6 @@ const CatalogoView = () => {
         return { total, favoritas, categoriasUnicas, promedioCalorias };
     }, [listaRecetas]);
 
-    // ── Filtrado y ordenamiento multicriterio ──────────────────────────────
     const recetasFiltradas = useMemo(() => {
         let resultado = [...listaRecetas];
 
@@ -182,10 +205,9 @@ const CatalogoView = () => {
         try {
             await agregarReceta(datos);
             setModalCrear(false);
-            toast.success('¡Ficha técnica registrada en GastroHub!');
+            toast.success('Ficha técnica publicada en el catálogo');
         } catch (err) {
-            const mensajeError = err?.response?.data?.error || 'Error al crear la receta';
-            setErrorFormulario(mensajeError);
+            setErrorFormulario(err?.response?.data?.error || 'Error al crear la receta');
         } finally {
             setGuardando(false);
         }
@@ -203,8 +225,7 @@ const CatalogoView = () => {
             }
             toast.success('Ficha técnica actualizada correctamente');
         } catch (err) {
-            const mensajeError = err?.response?.data?.error || 'Error al actualizar la receta';
-            setErrorFormulario(mensajeError);
+            setErrorFormulario(err?.response?.data?.error || 'Error al actualizar la receta');
         } finally {
             setGuardando(false);
         }
@@ -218,8 +239,8 @@ const CatalogoView = () => {
             }
             toast.success(
                 actualizada.favorito
-                    ? `★ "${actualizada.titulo}" añadida a Favoritos`
-                    : `Se quitó "${actualizada.titulo}" de Favoritos`
+                    ? `"${actualizada.titulo}" añadida a Favoritas`
+                    : `"${actualizada.titulo}" removida de Favoritas`
             );
         } catch {
             toast.error('No se pudo actualizar el estado de favorito');
@@ -232,155 +253,167 @@ const CatalogoView = () => {
         try {
             await borrarReceta(modalEliminar.receta._id);
             setModalEliminar({ abierto: false, receta: null });
-            toast.success('Receta eliminada del catálogo');
+            toast.success('Ficha técnica eliminada del catálogo');
             if (recetasPagina.length === 1 && paginaActual > 1) {
                 setPaginaActual((prev) => prev - 1);
             }
         } catch (err) {
-            const msg = err?.response?.data?.error || 'No se pudo eliminar la receta';
-            toast.error(msg);
+            toast.error(err?.response?.data?.error || 'No se pudo eliminar la receta');
         } finally {
             setEliminando(false);
         }
     };
 
     return (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-9">
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-xs mb-5" style={{ color: 'var(--color-texto-medio)' }}>
-                <Link to="/" style={{ color: 'var(--color-primario)', textDecoration: 'none', fontWeight: 600 }}>
-                    GastroHub
-                </Link>
-                <span>/</span>
-                <span>Catálogo Gastronómico</span>
-            </nav>
-
-            {/* Encabezado + Acciones */}
+        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+            {/* Encabezado y Controles */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold" style={{ color: 'var(--color-texto-oscuro)' }}>
-                        Catálogo Gastronómico & Fichas Técnicas
+                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: 'var(--texto-primario)' }}>
+                        Catálogo de Fichas Técnicas
                     </h1>
-                    <p className="text-sm mt-1" style={{ color: 'var(--color-texto-medio)' }}>
-                        Mostrando {recetasFiltradas.length} de {listaRecetas.length} receta{listaRecetas.length !== 1 ? 's' : ''} registrada{listaRecetas.length !== 1 ? 's' : ''}
+                    <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'var(--texto-secundario)' }}>
+                        Mostrando <span className="font-mono-num font-bold">{recetasFiltradas.length}</span> de{' '}
+                        <span className="font-mono-num font-bold">{listaRecetas.length}</span> recetas estandarizadas
                     </p>
                 </div>
 
                 <div className="flex items-center gap-2.5 self-start sm:self-auto">
-                    {/* Selector de vista Tarjetas / Tabla */}
+                    {/* Selector segmentado Tarjetas / Tabla */}
                     <div
                         className="inline-flex rounded-xl p-1 border"
-                        style={{ background: '#fff', borderColor: 'var(--color-borde)' }}
+                        style={{ background: 'var(--bg-secundario)', borderColor: 'var(--borde-sutil)' }}
+                        role="group"
+                        aria-label="Cambiar modo de visualización"
                     >
                         <button
                             type="button"
                             onClick={() => setModoVista('grid')}
-                            className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
                             style={{
-                                background: modoVista === 'grid' ? 'var(--color-salmon-claro)' : 'transparent',
-                                color: modoVista === 'grid' ? 'var(--color-primario-hover)' : 'var(--color-texto-medio)',
+                                background: modoVista === 'grid' ? 'var(--bg-card)' : 'transparent',
+                                color: modoVista === 'grid' ? 'var(--texto-primario)' : 'var(--texto-muted)',
+                                boxShadow: modoVista === 'grid' ? 'var(--sombra-sm)' : 'none',
                             }}
                         >
-                            ⊞ Tarjetas
+                            <LayoutGrid className="w-3.5 h-3.5" />
+                            <span>Tarjetas</span>
                         </button>
                         <button
                             type="button"
                             onClick={() => setModoVista('tabla')}
-                            className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
                             style={{
-                                background: modoVista === 'tabla' ? 'var(--color-salmon-claro)' : 'transparent',
-                                color: modoVista === 'tabla' ? 'var(--color-primario-hover)' : 'var(--color-texto-medio)',
+                                background: modoVista === 'tabla' ? 'var(--bg-card)' : 'transparent',
+                                color: modoVista === 'tabla' ? 'var(--texto-primario)' : 'var(--texto-muted)',
+                                boxShadow: modoVista === 'tabla' ? 'var(--sombra-sm)' : 'none',
                             }}
                         >
-                            ☰ Tabla
+                            <Table2 className="w-3.5 h-3.5" />
+                            <span>Tabla</span>
                         </button>
                     </div>
 
                     <button
+                        type="button"
                         className="btn-primario"
                         onClick={() => {
                             setErrorFormulario(null);
                             setModalCrear(true);
                         }}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Nueva Receta
+                        <Plus className="w-4 h-4" />
+                        <span>Nueva Ficha</span>
                     </button>
                 </div>
             </div>
 
-            {/* Tarjetas KPI de resumen */}
+            {/* Resumen KPI Compacto */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div className="tarjeta p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: 'var(--color-salmon-claro)' }}>
-                        📖
+                <div className="tarjeta p-4 flex items-center gap-3.5">
+                    <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                        style={{ background: 'var(--color-primario-suave)', color: 'var(--color-primario)' }}
+                    >
+                        <BookOpen className="w-4 h-4" />
                     </div>
                     <div>
-                        <p className="text-xs font-medium" style={{ color: 'var(--color-texto-medio)' }}>Total Recetas</p>
-                        <p className="text-xl font-extrabold" style={{ color: 'var(--color-texto-oscuro)' }}>{kpis.total}</p>
+                        <p className="text-[11px] font-semibold" style={{ color: 'var(--texto-muted)' }}>Total Fichas</p>
+                        <p className="text-xl font-extrabold font-mono-num" style={{ color: 'var(--texto-primario)' }}>{kpis.total}</p>
                     </div>
                 </div>
 
-                <div className="tarjeta p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: 'var(--color-ambar-claro)' }}>
-                        ⭐
+                <div className="tarjeta p-4 flex items-center gap-3.5">
+                    <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                        style={{ background: 'var(--color-advertencia-bg)', color: 'var(--color-advertencia)' }}
+                    >
+                        <Star className="w-4 h-4" />
                     </div>
                     <div>
-                        <p className="text-xs font-medium" style={{ color: 'var(--color-texto-medio)' }}>Favoritas del Chef</p>
-                        <p className="text-xl font-extrabold" style={{ color: 'var(--color-texto-oscuro)' }}>{kpis.favoritas}</p>
+                        <p className="text-[11px] font-semibold" style={{ color: 'var(--texto-muted)' }}>Favoritas del Chef</p>
+                        <p className="text-xl font-extrabold font-mono-num" style={{ color: 'var(--texto-primario)' }}>{kpis.favoritas}</p>
                     </div>
                 </div>
 
-                <div className="tarjeta p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: 'var(--color-verde-menta)' }}>
-                        🏷️
+                <div className="tarjeta p-4 flex items-center gap-3.5">
+                    <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                        style={{ background: 'var(--color-exito-bg)', color: 'var(--color-exito)' }}
+                    >
+                        <Layers className="w-4 h-4" />
                     </div>
                     <div>
-                        <p className="text-xs font-medium" style={{ color: 'var(--color-texto-medio)' }}>Categorías Activas</p>
-                        <p className="text-xl font-extrabold" style={{ color: 'var(--color-texto-oscuro)' }}>{kpis.categoriasUnicas}</p>
+                        <p className="text-[11px] font-semibold" style={{ color: 'var(--texto-muted)' }}>Partidas Activas</p>
+                        <p className="text-xl font-extrabold font-mono-num" style={{ color: 'var(--texto-primario)' }}>{kpis.categoriasUnicas}</p>
                     </div>
                 </div>
 
-                <div className="tarjeta p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: 'var(--color-celeste)' }}>
-                        🔥
+                <div className="tarjeta p-4 flex items-center gap-3.5">
+                    <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                        style={{ background: 'var(--color-info-bg)', color: 'var(--color-info)' }}
+                    >
+                        <Flame className="w-4 h-4" />
                     </div>
                     <div>
-                        <p className="text-xs font-medium" style={{ color: 'var(--color-texto-medio)' }}>Promedio Energético</p>
-                        <p className="text-xl font-extrabold" style={{ color: 'var(--color-texto-oscuro)' }}>
+                        <p className="text-[11px] font-semibold" style={{ color: 'var(--texto-muted)' }}>Media Energética</p>
+                        <p className="text-xl font-extrabold font-mono-num" style={{ color: 'var(--texto-primario)' }}>
                             {kpis.promedioCalorias ? `${kpis.promedioCalorias} kcal` : '—'}
                         </p>
                     </div>
                 </div>
             </div>
 
-            {/* Panel de Filtros */}
+            {/* Filtros */}
             <FiltrosRecetas
                 filtros={filtros}
                 alCambiarFiltros={actualizarFiltros}
                 alLimpiar={limpiarFiltros}
             />
 
-            {/* Contenido principal */}
+            {/* Estado de carga / Error / Tabla */}
             {cargando ? (
-                <div className="tarjeta p-4">
-                    <Spinner mensaje="Cargando catálogo gastronómico..." />
-                </div>
+                <Spinner mensaje="Sincronizando catálogo gastronómico..." />
             ) : errorGlobal ? (
                 <div
-                    className="tarjeta p-8 text-center"
-                    style={{ background: '#fde8e8', borderColor: '#f8c9c9' }}
+                    role="alert"
+                    className="tarjeta p-8 text-center flex flex-col items-center gap-3"
+                    style={{ background: 'var(--color-error-bg)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
                 >
-                    <p className="font-semibold text-sm" style={{ color: '#b91c1c' }}>{errorGlobal}</p>
-                    <button className="btn-primario mt-4" onClick={cargarRecetas}>Reintentar conexión</button>
+                    <AlertCircle className="w-8 h-8" style={{ color: 'var(--color-error)' }} />
+                    <p className="font-bold text-sm" style={{ color: 'var(--color-error-texto)' }}>{errorGlobal}</p>
+                    <button type="button" className="btn-primario mt-1" onClick={cargarRecetas}>
+                        Reintentar sincronización
+                    </button>
                 </div>
             ) : (
                 <>
                     <TablaRecetas
                         recetas={recetasPagina}
                         modoVista={modoVista}
+                        ordenActual={filtros.ordenar}
+                        alCambiarOrden={(nuevoOrden) => actualizarFiltros({ ordenar: nuevoOrden })}
                         alVerDetalle={(receta) => setModalDetalle({ abierto: true, receta })}
                         alEditar={(receta) => {
                             setErrorFormulario(null);
@@ -393,28 +426,35 @@ const CatalogoView = () => {
                     {/* Paginación */}
                     {totalPaginas > 1 && (
                         <div className="flex items-center justify-between mt-6">
-                            <p className="text-xs font-medium" style={{ color: 'var(--color-texto-medio)' }}>
+                            <p className="text-xs font-mono-num" style={{ color: 'var(--texto-secundario)' }}>
                                 Página {paginaActual} de {totalPaginas}
                             </p>
-                            <div className="flex gap-2">
+                            <div className="flex items-center gap-1.5">
                                 <button
+                                    type="button"
                                     onClick={() => setPaginaActual((p) => Math.max(p - 1, 1))}
                                     disabled={paginaActual === 1}
-                                    className="px-3 py-2 text-xs rounded-xl border font-medium transition-colors disabled:opacity-40 cursor-pointer"
-                                    style={{ borderColor: 'var(--color-borde)', color: 'var(--color-texto-medio)', background: '#fff' }}
+                                    className="px-3 py-1.5 text-xs rounded-xl border font-semibold inline-flex items-center gap-1 disabled:opacity-40 cursor-pointer"
+                                    style={{
+                                        borderColor: 'var(--borde-sutil)',
+                                        color: 'var(--texto-secundario)',
+                                        background: 'var(--bg-card)',
+                                    }}
                                 >
-                                    ← Anterior
+                                    <ChevronLeft className="w-3.5 h-3.5" />
+                                    <span>Anterior</span>
                                 </button>
 
                                 {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((num) => (
                                     <button
                                         key={num}
+                                        type="button"
                                         onClick={() => setPaginaActual(num)}
-                                        className="w-8 h-8 text-xs rounded-xl border font-semibold transition-colors cursor-pointer"
+                                        className="w-8 h-8 text-xs font-mono-num rounded-xl border font-bold transition-colors cursor-pointer"
                                         style={{
-                                            borderColor: num === paginaActual ? 'var(--color-primario)' : 'var(--color-borde)',
-                                            background: num === paginaActual ? 'var(--color-primario)' : '#fff',
-                                            color: num === paginaActual ? '#fff' : 'var(--color-texto-medio)',
+                                            borderColor: num === paginaActual ? 'var(--color-primario)' : 'var(--borde-sutil)',
+                                            background: num === paginaActual ? 'var(--color-primario)' : 'var(--bg-card)',
+                                            color: num === paginaActual ? '#FFFFFF' : 'var(--texto-secundario)',
                                         }}
                                     >
                                         {num}
@@ -422,12 +462,18 @@ const CatalogoView = () => {
                                 ))}
 
                                 <button
+                                    type="button"
                                     onClick={() => setPaginaActual((p) => Math.min(p + 1, totalPaginas))}
                                     disabled={paginaActual === totalPaginas}
-                                    className="px-3 py-2 text-xs rounded-xl border font-medium transition-colors disabled:opacity-40 cursor-pointer"
-                                    style={{ borderColor: 'var(--color-borde)', color: 'var(--color-texto-medio)', background: '#fff' }}
+                                    className="px-3 py-1.5 text-xs rounded-xl border font-semibold inline-flex items-center gap-1 disabled:opacity-40 cursor-pointer"
+                                    style={{
+                                        borderColor: 'var(--borde-sutil)',
+                                        color: 'var(--texto-secundario)',
+                                        background: 'var(--bg-card)',
+                                    }}
                                 >
-                                    Siguiente →
+                                    <span>Siguiente</span>
+                                    <ChevronRight className="w-3.5 h-3.5" />
                                 </button>
                             </div>
                         </div>
@@ -435,11 +481,12 @@ const CatalogoView = () => {
                 </>
             )}
 
-            {/* Modal — Crear receta */}
+            {/* Modal — Crear */}
             <Modal
                 abierto={modalCrear}
                 alCerrar={() => setModalCrear(false)}
                 titulo="Registrar Nueva Ficha Técnica"
+                subtitulo="Documenta insumos, porciones, tiempos y protocolo paso a paso"
                 tamano="lg"
             >
                 <FormularioReceta
@@ -450,11 +497,12 @@ const CatalogoView = () => {
                 />
             </Modal>
 
-            {/* Modal — Editar receta */}
+            {/* Modal — Editar */}
             <Modal
                 abierto={modalEditar.abierto}
                 alCerrar={() => setModalEditar({ abierto: false, receta: null })}
-                titulo="Editar Ficha Técnica de Receta"
+                titulo="Editar Ficha Técnica"
+                subtitulo="Actualiza parámetros o ingredientes de la receta seleccionada"
                 tamano="lg"
             >
                 <FormularioReceta
@@ -471,6 +519,7 @@ const CatalogoView = () => {
                 abierto={modalDetalle.abierto}
                 alCerrar={() => setModalDetalle({ abierto: false, receta: null })}
                 titulo="Ficha Técnica & Modo Cocina"
+                subtitulo="Escala el rendimiento por porciones o marca cada etapa completada"
                 tamano="lg"
             >
                 <DetalleReceta
@@ -490,7 +539,7 @@ const CatalogoView = () => {
                 alCerrar={() => setModalEliminar({ abierto: false, receta: null })}
                 alConfirmar={manejarEliminar}
                 titulo="Eliminar ficha técnica"
-                mensaje={`¿Seguro que deseas eliminar la receta "${modalEliminar.receta?.titulo}" de GastroHub? Esta acción no se puede deshacer.`}
+                mensaje={`¿Confirmas la eliminación permanente de "${modalEliminar.receta?.titulo}" del catálogo de GastroHub?`}
                 cargando={eliminando}
             />
         </div>

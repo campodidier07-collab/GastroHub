@@ -1,227 +1,423 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 @import "tailwindcss";
 
-/* ─── Sistema de diseño GastroHub (Paleta Editorial Gourmet) ─────────────── */
-:root {
-    --color-crema: #FAF7F2;
-    --color-salmon-claro: #FCECE6;
-    --color-rosa-pastel: #F7D6CC;
-    --color-verde-menta: #E3F2EB;
-    --color-celeste: #E6F0F9;
-    --color-lavanda: #EFEBF9;
-    --color-ambar-claro: #FEF3E2;
-    --color-gris-suave: #F3F0EA;
-    --color-texto-oscuro: #1F1D1A;
-    --color-texto-medio: #5C574F;
-    --color-borde: #E6E1D8;
-    --color-primario: #D95D39;
-    --color-primario-hover: #BF4B28;
-    --color-secundario: #2E6F5E;
-    --color-ambar: #D98A2B;
+/* ═══════════════════════════════════════════════════════════════════════════
+   GASTROHUB ENTERPRISE DESIGN SYSTEM (Shadcn / Linear / Stripe / Vercel)
+   Escala base: 4px / 8px · WCAG AA+ Contrast · Dual Theme (Light & Dark)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root,
+[data-theme="light"] {
+    /* Colores de marca y semánticos */
+    --color-primario: #EA580C;
+    --color-primario-hover: #C2410C;
+    --color-primario-suave: rgba(234, 88, 12, 0.10);
+    --color-secundario: #4F46E5;
+    --color-secundario-suave: rgba(79, 70, 229, 0.10);
+
+    --color-exito: #10B981;
+    --color-exito-bg: rgba(16, 185, 129, 0.12);
+    --color-exito-texto: #047857;
+
+    --color-advertencia: #F59E0B;
+    --color-advertencia-bg: rgba(245, 158, 11, 0.14);
+    --color-advertencia-texto: #B45309;
+
+    --color-error: #EF4444;
+    --color-error-bg: rgba(239, 68, 68, 0.12);
+    --color-error-texto: #B91C1C;
+
+    --color-info: #0EA5E9;
+    --color-info-bg: rgba(14, 165, 233, 0.12);
+    --color-info-texto: #0369A1;
+
+    /* Superficies y fondos */
+    --bg-principal: #F8FAFC;
+    --bg-secundario: #F1F5F9;
+    --bg-card: #FFFFFF;
+    --bg-elevado: #FFFFFF;
+    --bg-hover: #F1F5F9;
+    --bg-input: #FFFFFF;
+    --bg-glass: rgba(255, 255, 255, 0.84);
+
+    /* Tipografía y jerarquía de texto */
+    --texto-primario: #0F172A;
+    --texto-secundario: #475569;
+    --texto-muted: #64748B;
+
+    /* Bordes y divisores */
+    --borde-sutil: #E2E8F0;
+    --borde-fuerte: #CBD5E1;
+
+    /* Sombras multicapa estilo Stripe / Linear */
+    --sombra-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+    --sombra-md: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+    --sombra-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.10), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+    --sombra-glow: 0 4px 20px -2px rgba(234, 88, 12, 0.32);
+
+    /* Gradientes */
+    --gradiente-primario: linear-gradient(135deg, #EA580C 0%, #D97706 100%);
+    --gradiente-hero: radial-gradient(circle at 15% 20%, rgba(234, 88, 12, 0.09) 0%, transparent 45%),
+                      radial-gradient(circle at 85% 80%, rgba(79, 70, 229, 0.07) 0%, transparent 45%);
+
+    /* Alias de compatibilidad interna */
+    --color-crema: var(--bg-principal);
+    --color-gris-suave: var(--bg-secundario);
+    --color-texto-oscuro: var(--texto-primario);
+    --color-texto-medio: var(--texto-secundario);
+    --color-borde: var(--borde-sutil);
+    --color-salmon-claro: var(--color-primario-suave);
+    --color-verde-menta: var(--color-exito-bg);
+    --color-celeste: var(--color-info-bg);
+    --color-ambar-claro: var(--color-advertencia-bg);
+}
+
+[data-theme="dark"] {
+    /* Colores de marca optimizados para contraste sobre superficies oscuras */
+    --color-primario: #F97316;
+    --color-primario-hover: #EA580C;
+    --color-primario-suave: rgba(249, 115, 22, 0.15);
+    --color-secundario: #6366F1;
+    --color-secundario-suave: rgba(99, 102, 241, 0.16);
+
+    --color-exito: #10B981;
+    --color-exito-bg: rgba(16, 185, 129, 0.16);
+    --color-exito-texto: #34D399;
+
+    --color-advertencia: #F59E0B;
+    --color-advertencia-bg: rgba(245, 158, 11, 0.16);
+    --color-advertencia-texto: #FBBF24;
+
+    --color-error: #EF4444;
+    --color-error-bg: rgba(239, 68, 68, 0.16);
+    --color-error-texto: #F87171;
+
+    --color-info: #38BDF8;
+    --color-info-bg: rgba(56, 189, 248, 0.16);
+    --color-info-texto: #38BDF8;
+
+    /* Superficies Obsidian (Linear / Vercel / Supabase Dark) */
+    --bg-principal: #090D16;
+    --bg-secundario: #0F1623;
+    --bg-card: #111827;
+    --bg-elevado: #161F33;
+    --bg-hover: #1E293B;
+    --bg-input: #0B111E;
+    --bg-glass: rgba(15, 22, 35, 0.82);
+
+    /* Tipografía en modo oscuro */
+    --texto-primario: #F8FAFC;
+    --texto-secundario: #94A3B8;
+    --texto-muted: #64748B;
+
+    /* Bordes sutiles luminosos */
+    --borde-sutil: #1E293B;
+    --borde-fuerte: #334155;
+
+    /* Sombras en modo oscuro */
+    --sombra-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+    --sombra-md: 0 6px 16px -2px rgba(0, 0, 0, 0.45);
+    --sombra-lg: 0 20px 40px -8px rgba(0, 0, 0, 0.65);
+    --sombra-glow: 0 4px 24px -2px rgba(249, 115, 22, 0.35);
+
+    /* Gradientes */
+    --gradiente-primario: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+    --gradiente-hero: radial-gradient(circle at 15% 20%, rgba(249, 115, 22, 0.14) 0%, transparent 45%),
+                      radial-gradient(circle at 85% 80%, rgba(99, 102, 241, 0.12) 0%, transparent 45%);
+
+    /* Alias de compatibilidad interna */
+    --color-crema: var(--bg-principal);
+    --color-gris-suave: var(--bg-secundario);
+    --color-texto-oscuro: var(--texto-primario);
+    --color-texto-medio: var(--texto-secundario);
+    --color-borde: var(--borde-sutil);
+    --color-salmon-claro: var(--color-primario-suave);
+    --color-verde-menta: var(--color-exito-bg);
+    --color-celeste: var(--color-info-bg);
+    --color-ambar-claro: var(--color-advertencia-bg);
 }
 
 @layer base {
     html {
         scroll-behavior: smooth;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color-scheme: light dark;
     }
 
     body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--color-crema);
-        color: var(--color-texto-oscuro);
-        line-height: 1.6;
+        background-color: var(--bg-principal);
+        color: var(--texto-primario);
+        line-height: 1.5;
         -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+        transition: background-color 200ms ease, color 200ms ease;
     }
 
-    h1, h2, h3, .font-display {
+    h1, h2, h3, h4, .font-display {
         font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.025em;
+    }
+
+    .font-mono-num {
+        font-family: 'JetBrains Mono', monospace;
+        font-variant-numeric: tabular-nums;
     }
 }
 
-/* ─── Scrollbar personalizada ─────────────────────────────────────────────── */
+/* ─── Accesibilidad: Focus visible estilo Shadcn / Linear ─────────────────── */
+:focus-visible {
+    outline: 2px solid var(--color-primario);
+    outline-offset: 2px;
+}
+
+/* ─── Scrollbar minimalista ───────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--color-gris-suave);
+    background: var(--bg-secundario);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-primario);
-    border-radius: 8px;
+    background: var(--borde-fuerte);
+    border-radius: 9999px;
 }
 
-/* ─── Clases utilitarias globales ─────────────────────────────────────────── */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primario);
+}
+
+/* ─── Sistema de Botones (150ms - 200ms microinteracciones) ───────────────── */
 .btn-primario {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.6rem 1.3rem;
-    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-primario-hover) 100%);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-size: 0.875rem;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
+    background: var(--gradiente-primario);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    font-size: 0.8125rem;
     font-weight: 600;
+    line-height: 1.25rem;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    box-shadow: 0 4px 14px rgba(217, 93, 57, 0.28);
+    transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 200ms ease,
+                filter 150ms ease;
+    box-shadow: var(--sombra-glow);
 }
 
 .btn-primario:hover:not(:disabled) {
-    filter: brightness(1.05);
+    filter: brightness(1.06);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(217, 93, 57, 0.38);
 }
 
 .btn-primario:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.985);
 }
 
 .btn-primario:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
+    box-shadow: none;
 }
 
 .btn-secundario {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.6rem 1.3rem;
-    background: #fff;
-    color: var(--color-texto-oscuro);
-    border: 1.5px solid var(--color-borde);
-    border-radius: 12px;
-    font-size: 0.875rem;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
+    background: var(--bg-card);
+    color: var(--texto-primario);
+    border: 1px solid var(--borde-sutil);
+    border-radius: 10px;
+    font-size: 0.8125rem;
     font-weight: 600;
+    line-height: 1.25rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 150ms ease,
+                border-color 150ms ease,
+                color 150ms ease,
+                transform 150ms ease;
+    box-shadow: var(--sombra-sm);
 }
 
 .btn-secundario:hover:not(:disabled) {
-    border-color: var(--color-primario);
-    color: var(--color-primario);
-    background: var(--color-salmon-claro);
+    background: var(--bg-hover);
+    border-color: var(--borde-fuerte);
 }
 
-.btn-peligro {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.45rem 0.9rem;
-    background: #fde8e8;
-    color: #b91c1c;
-    border: 1px solid #f8c9c9;
-    border-radius: 9px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-peligro:hover:not(:disabled) {
-    background: #f8c9c9;
-}
-
-.btn-editar {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.45rem 0.9rem;
-    background: #e8f2fc;
-    color: #1d5fa7;
-    border: 1px solid #c5ddf5;
-    border-radius: 9px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-editar:hover:not(:disabled) {
-    background: #c5ddf5;
+.btn-secundario:active:not(:disabled) {
+    transform: scale(0.985);
 }
 
 .btn-ver {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.35rem;
-    padding: 0.45rem 0.9rem;
-    background: var(--color-verde-menta);
-    color: var(--color-secundario);
-    border: 1px solid #bfe0d1;
-    border-radius: 9px;
-    font-size: 0.78rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--color-exito-bg);
+    color: var(--color-exito-texto);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 8px;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 150ms ease;
 }
 
 .btn-ver:hover:not(:disabled) {
-    background: #bfe0d1;
+    filter: brightness(1.08);
+    transform: translateY(-1px);
 }
 
+.btn-editar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--color-info-bg);
+    color: var(--color-info-texto);
+    border: 1px solid rgba(14, 165, 233, 0.25);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
+}
+
+.btn-editar:hover:not(:disabled) {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+.btn-peligro {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--color-error-bg);
+    color: var(--color-error-texto);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
+}
+
+.btn-peligro:hover:not(:disabled) {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+/* ─── Inputs y Controles de Formulario Nivel Empresarial ──────────────────── */
 .input-global {
     width: 100%;
-    padding: 0.62rem 0.9rem;
-    background: #fff;
-    border: 1.5px solid var(--color-borde);
+    padding: 0.55rem 0.85rem;
+    background: var(--bg-input);
+    border: 1px solid var(--borde-sutil);
     border-radius: 10px;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-family: 'Inter', sans-serif;
-    color: var(--color-texto-oscuro);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: var(--texto-primario);
+    transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
     outline: none;
+    box-shadow: var(--sombra-sm);
+}
+
+.input-global:hover:not(:focus):not(:disabled) {
+    border-color: var(--borde-fuerte);
 }
 
 .input-global:focus {
     border-color: var(--color-primario);
-    box-shadow: 0 0 0 3px rgba(217, 93, 57, 0.16);
+    box-shadow: 0 0 0 3px var(--color-primario-suave);
 }
 
 .input-global::placeholder {
-    color: #9e988e;
+    color: var(--texto-muted);
 }
 
+.input-error {
+    border-color: var(--color-error) !important;
+    box-shadow: 0 0 0 3px var(--color-error-bg) !important;
+}
+
+.input-exito {
+    border-color: var(--color-exito) !important;
+}
+
+/* ─── Superficies y Cards ─────────────────────────────────────────────────── */
 .tarjeta {
-    background: #fff;
-    border: 1px solid var(--color-borde);
-    border-radius: 18px;
-    box-shadow: 0 2px 14px rgba(31, 29, 26, 0.04);
-    transition: box-shadow 0.22s ease, transform 0.22s ease;
+    background: var(--bg-card);
+    border: 1px solid var(--borde-sutil);
+    border-radius: 14px;
+    box-shadow: var(--sombra-sm);
+    transition: box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 200ms ease,
+                transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tarjeta:hover {
-    box-shadow: 0 8px 28px rgba(31, 29, 26, 0.08);
+.tarjeta-interactiva:hover {
+    border-color: var(--borde-fuerte);
+    box-shadow: var(--sombra-md);
+    transform: translateY(-2px);
 }
 
-/* ─── Animaciones de entrada ──────────────────────────────────────────────── */
-@keyframes fadeInUp {
+/* ─── Animaciones Fluidas (150ms - 300ms) ─────────────────────────────────── */
+@keyframes fadeInScale {
     from {
         opacity: 0;
-        transform: translateY(16px);
+        transform: scale(0.97) translateY(6px);
     }
-
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes pulseShimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
     }
 }
 
 .animar-entrada {
-    animation: fadeInUp 0.35s ease both;
+    animation: fadeInScale 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ─── Estilos de impresión para fichas técnicas de recetas ────────────────── */
+.skeleton-shimmer {
+    background: linear-gradient(
+        90deg,
+        var(--bg-secundario) 25%,
+        var(--bg-hover) 50%,
+        var(--bg-secundario) 75%
+    );
+    background-size: 200% 100%;
+    animation: pulseShimmer 1.5s infinite linear;
+    border-radius: 8px;
+}
+
+/* ─── Impresión de Ficha Técnica ──────────────────────────────────────────── */
 @media print {
-    header, footer, .no-print {
+    aside, header, footer, .no-print {
         display: none !important;
     }
 
     body {
-        background: #fff !important;
+        background: #FFFFFF !important;
+        color: #000000 !important;
     }
 }

@@ -28,3 +28,4 @@ const ejecutarSeed = async () => {
 };
 
 ejecutarSeed();
+

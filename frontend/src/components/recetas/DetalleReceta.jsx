@@ -1,14 +1,27 @@
 import { useState } from 'react';
+import {
+    Star,
+    Printer,
+    Pencil,
+    Clock,
+    Users,
+    Flame,
+    Minus,
+    Plus,
+    RotateCcw,
+    CheckCircle2,
+    Utensils,
+} from 'lucide-react';
 
 const ESTILOS_DIFICULTAD = {
-    'Fácil': { bg: '#e3f2eb', color: '#1f634c' },
-    'Media': { bg: '#fef3e2', color: '#b45309' },
-    'Alta': { bg: '#fde8e8', color: '#b91c1c' },
+    'Fácil': { bg: 'var(--color-exito-bg)', color: 'var(--color-exito-texto)' },
+    'Media': { bg: 'var(--color-advertencia-bg)', color: 'var(--color-advertencia-texto)' },
+    'Alta': { bg: 'var(--color-error-bg)', color: 'var(--color-error-texto)' },
 };
 
 /**
- * Vista interactiva de Ficha Técnica de Receta en GastroHub.
- * Incluye escalador dinámico de porciones, checklist de ingredientes/pasos y botón de impresión.
+ * Ficha Técnica Interactiva & Modo Cocina de GastroHub.
+ * Con escalador de porciones en tiempo real, checklist interactivo e impresión limpia.
  */
 const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
     const porcionesBase = receta?.porciones || 4;
@@ -52,9 +65,9 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* Imagen de cabecera si existe */}
+            {/* Banner fotográfico */}
             {receta.imagenUrl && (
-                <div className="relative h-52 w-full rounded-2xl overflow-hidden border" style={{ borderColor: 'var(--color-borde)' }}>
+                <div className="relative h-52 w-full rounded-2xl overflow-hidden border" style={{ borderColor: 'var(--borde-sutil)' }}>
                     <img
                         src={receta.imagenUrl}
                         alt={receta.titulo}
@@ -62,44 +75,45 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                     />
                     <div
                         className="absolute inset-0"
-                        style={{ background: 'linear-gradient(to top, rgba(31,29,26,0.55) 0%, transparent 60%)' }}
+                        style={{ background: 'linear-gradient(to top, rgba(9,13,22,0.75) 0%, transparent 65%)' }}
                     />
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
-                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-black/50 backdrop-blur-sm">
+                        <span className="px-3 py-1 rounded-lg text-xs font-bold bg-black/55 backdrop-blur-md">
                             {receta.categoria || 'Plato Fuerte'}
                         </span>
                         {receta.calorias ? (
-                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-black/50 backdrop-blur-sm">
-                                🔥 {Math.round(receta.calorias * factorEscala)} kcal totales ({receta.calorias} kcal / base)
+                            <span className="px-3 py-1 rounded-lg text-xs font-mono-num font-bold bg-black/55 backdrop-blur-md flex items-center gap-1">
+                                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                                {Math.round(receta.calorias * factorEscala)} kcal totales ({receta.calorias} kcal/porc.)
                             </span>
                         ) : null}
                     </div>
                 </div>
             )}
 
-            {/* Encabezado y acciones rápidas */}
+            {/* Cabecera y botones de acción */}
             <div className="flex flex-col gap-2">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-1.5">
                             <span
-                                className="px-2.5 py-0.5 rounded-full text-xs font-bold"
-                                style={{ background: 'var(--color-salmon-claro)', color: 'var(--color-primario-hover)' }}
+                                className="px-2.5 py-0.5 rounded-md text-xs font-bold"
+                                style={{ background: 'var(--color-primario-suave)', color: 'var(--color-primario)' }}
                             >
                                 {receta.categoria || 'Plato Fuerte'}
                             </span>
                             <span
-                                className="px-2.5 py-0.5 rounded-full text-xs font-bold"
+                                className="px-2.5 py-0.5 rounded-md text-xs font-bold"
                                 style={{ background: badgeDif.bg, color: badgeDif.color }}
                             >
-                                Dificultad {dificultad}
+                                Complejidad {dificultad}
                             </span>
-                            <span className="text-xs" style={{ color: 'var(--color-texto-medio)' }}>
-                                ⏱️ {receta.tiempo}
+                            <span className="inline-flex items-center gap-1 text-xs font-mono-num" style={{ color: 'var(--texto-secundario)' }}>
+                                <Clock className="w-3.5 h-3.5" /> {receta.tiempo}
                             </span>
                         </div>
 
-                        <h3 className="text-xl sm:text-2xl font-extrabold" style={{ color: 'var(--color-texto-oscuro)' }}>
+                        <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight" style={{ color: 'var(--texto-primario)' }}>
                             {receta.titulo}
                         </h3>
                     </div>
@@ -109,24 +123,20 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                             <button
                                 type="button"
                                 onClick={() => alToggleFavorito(receta)}
-                                className="px-3 py-1.5 rounded-xl border text-xs font-bold cursor-pointer"
-                                style={{
-                                    background: receta.favorito ? 'var(--color-ambar-claro)' : '#fff',
-                                    color: receta.favorito ? '#b45309' : 'var(--color-texto-medio)',
-                                    borderColor: receta.favorito ? '#f59e0b' : 'var(--color-borde)',
-                                }}
+                                className="btn-secundario py-1.5 px-3 text-xs"
                             >
-                                {receta.favorito ? '★ Favorita' : '☆ Favorito'}
+                                <Star className={`w-3.5 h-3.5 ${receta.favorito ? 'fill-amber-400 text-amber-400' : ''}`} />
+                                <span>{receta.favorito ? 'Favorita' : 'Destacar'}</span>
                             </button>
                         )}
                         <button
                             type="button"
                             onClick={() => window.print()}
-                            className="px-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer"
-                            style={{ background: '#fff', borderColor: 'var(--color-borde)', color: 'var(--color-texto-oscuro)' }}
+                            className="btn-secundario py-1.5 px-3 text-xs"
                             title="Imprimir ficha técnica"
                         >
-                            🖨️ Imprimir
+                            <Printer className="w-3.5 h-3.5" />
+                            <span>Imprimir</span>
                         </button>
                         {alEditar && (
                             <button
@@ -134,34 +144,36 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                                 onClick={() => alEditar(receta)}
                                 className="btn-editar"
                             >
-                                Editar
+                                <Pencil className="w-3.5 h-3.5" />
+                                <span>Editar</span>
                             </button>
                         )}
                     </div>
                 </div>
 
                 {receta.descripcion && (
-                    <p className="text-sm leading-relaxed mt-1" style={{ color: 'var(--color-texto-medio)' }}>
+                    <p className="text-sm leading-relaxed mt-1" style={{ color: 'var(--texto-secundario)' }}>
                         {receta.descripcion}
                     </p>
                 )}
 
-                <p className="text-xs" style={{ color: 'var(--color-texto-medio)' }}>
-                    Registrada el {formatearFecha(receta.createdAt)}
+                <p className="text-xs" style={{ color: 'var(--texto-muted)' }}>
+                    Documentada el {formatearFecha(receta.createdAt)}
                 </p>
             </div>
 
-            {/* Escalador Dinámico de Porciones */}
+            {/* Calculadora de Rendimiento (Porciones) */}
             <div
                 className="p-4 rounded-2xl border flex flex-wrap items-center justify-between gap-3"
-                style={{ background: 'var(--color-crema)', borderColor: 'var(--color-borde)' }}
+                style={{ background: 'var(--bg-secundario)', borderColor: 'var(--borde-sutil)' }}
             >
                 <div>
-                    <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-primario)' }}>
-                        Calculadora de Rendimiento (Mise en Place)
+                    <p className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: 'var(--color-primario)' }}>
+                        <Users className="w-3.5 h-3.5" />
+                        <span>Escalador Dinámico de Rendimiento</span>
                     </p>
-                    <p className="text-xs" style={{ color: 'var(--color-texto-medio)' }}>
-                        Ajusta las porciones para recalcular automáticamente las cantidades de ingredientes.
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--texto-secundario)' }}>
+                        Modifica las porciones para recalcular todas las cantidades de mise en place en tiempo real.
                     </p>
                 </div>
 
@@ -169,70 +181,76 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                     <button
                         type="button"
                         onClick={() => setPorcionesActuales((p) => Math.max(1, p - 1))}
-                        className="w-8 h-8 rounded-lg border font-bold text-sm flex items-center justify-center bg-white cursor-pointer"
-                        style={{ borderColor: 'var(--color-borde)' }}
+                        className="w-8 h-8 rounded-lg border flex items-center justify-center cursor-pointer"
+                        style={{ background: 'var(--bg-card)', borderColor: 'var(--borde-sutil)', color: 'var(--texto-primario)' }}
+                        aria-label="Disminuir porciones"
                     >
-                        −
+                        <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="px-3 py-1 rounded-lg bg-white border text-sm font-extrabold" style={{ borderColor: 'var(--color-borde)' }}>
+                    <span
+                        className="px-3.5 py-1 rounded-lg border text-xs font-mono-num font-bold"
+                        style={{ background: 'var(--bg-card)', borderColor: 'var(--borde-sutil)', color: 'var(--texto-primario)' }}
+                    >
                         {porcionesActuales} {porcionesActuales === 1 ? 'porción' : 'porciones'}
                     </span>
                     <button
                         type="button"
                         onClick={() => setPorcionesActuales((p) => Math.min(50, p + 1))}
-                        className="w-8 h-8 rounded-lg border font-bold text-sm flex items-center justify-center bg-white cursor-pointer"
-                        style={{ borderColor: 'var(--color-borde)' }}
+                        className="w-8 h-8 rounded-lg border flex items-center justify-center cursor-pointer"
+                        style={{ background: 'var(--bg-card)', borderColor: 'var(--borde-sutil)', color: 'var(--texto-primario)' }}
+                        aria-label="Aumentar porciones"
                     >
-                        +
+                        <Plus className="w-3.5 h-3.5" />
                     </button>
                     {porcionesActuales !== porcionesBase && (
                         <button
                             type="button"
                             onClick={() => setPorcionesActuales(porcionesBase)}
-                            className="text-xs font-semibold underline ml-1 cursor-pointer"
+                            className="inline-flex items-center gap-1 text-xs font-semibold ml-1 cursor-pointer"
                             style={{ color: 'var(--color-primario)' }}
                         >
-                            Restablecer ({porcionesBase})
+                            <RotateCcw className="w-3 h-3" />
+                            <span>Base ({porcionesBase})</span>
                         </button>
                     )}
                 </div>
             </div>
 
-            {/* Ingredientes interactivos */}
+            {/* Tabla interactiva de Ingredientes */}
             <div>
                 <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-bold" style={{ color: 'var(--color-texto-oscuro)' }}>
-                        🥗 Ingredientes ({receta.ingredientes?.length || 0})
+                    <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: 'var(--texto-primario)' }}>
+                        <Utensils className="w-3.5 h-3.5" style={{ color: 'var(--color-primario)' }} />
+                        <span>Mise en Place ({receta.ingredientes?.length || 0} insumos)</span>
                     </h4>
-                    <span className="text-xs" style={{ color: 'var(--color-texto-medio)' }}>
-                        Haz clic en una fila para marcar tu mise en place
+                    <span className="text-[11px]" style={{ color: 'var(--texto-muted)' }}>
+                        Haz clic en cada insumo para marcarlo como listo
                     </span>
                 </div>
 
                 {receta.ingredientes?.length > 0 ? (
-                    <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'var(--color-borde)' }}>
-                        <table className="w-full text-sm">
+                    <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'var(--borde-sutil)' }}>
+                        <table className="w-full text-xs sm:text-sm">
                             <thead>
-                                <tr style={{ background: 'var(--color-gris-suave)' }}>
-                                    <th className="w-10 px-3 py-2 text-center text-xs font-semibold" style={{ color: 'var(--color-texto-medio)' }}>✓</th>
-                                    <th className="text-left px-4 py-2 font-semibold text-xs" style={{ color: 'var(--color-texto-medio)' }}>Ingrediente</th>
-                                    <th className="text-left px-4 py-2 font-semibold text-xs" style={{ color: 'var(--color-texto-medio)' }}>Cantidad escalada</th>
-                                    <th className="text-left px-4 py-2 font-semibold text-xs" style={{ color: 'var(--color-texto-medio)' }}>Unidad</th>
+                                <tr style={{ background: 'var(--bg-secundario)' }}>
+                                    <th className="w-10 px-3 py-2.5 text-center text-xs font-semibold" style={{ color: 'var(--texto-muted)' }}>✓</th>
+                                    <th className="text-left px-4 py-2.5 font-semibold text-xs" style={{ color: 'var(--texto-muted)' }}>Insumo</th>
+                                    <th className="text-left px-4 py-2.5 font-semibold text-xs" style={{ color: 'var(--texto-muted)' }}>Cantidad Escalada</th>
+                                    <th className="text-left px-4 py-2.5 font-semibold text-xs" style={{ color: 'var(--texto-muted)' }}>Unidad</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="divide-y" style={{ borderColor: 'var(--borde-sutil)' }}>
                                 {receta.ingredientes.map((ing, idx) => {
                                     const marcado = Boolean(ingredientesMarcados[idx]);
                                     return (
                                         <tr
                                             key={idx}
                                             onClick={() => alternarIngrediente(idx)}
-                                            className="border-t cursor-pointer transition-colors"
+                                            className="cursor-pointer transition-colors"
                                             style={{
-                                                borderColor: 'var(--color-borde)',
-                                                background: marcado ? 'var(--color-verde-menta)' : idx % 2 === 0 ? '#fff' : 'var(--color-crema)',
+                                                background: marcado ? 'var(--color-exito-bg)' : 'var(--bg-card)',
                                                 textDecoration: marcado ? 'line-through' : 'none',
-                                                opacity: marcado ? 0.75 : 1,
+                                                opacity: marcado ? 0.78 : 1,
                                             }}
                                         >
                                             <td className="px-3 py-2.5 text-center">
@@ -240,16 +258,16 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                                                     type="checkbox"
                                                     checked={marcado}
                                                     onChange={() => {}}
-                                                    className="cursor-pointer accent-emerald-700"
+                                                    className="cursor-pointer accent-emerald-600"
                                                 />
                                             </td>
-                                            <td className="px-4 py-2.5 font-medium" style={{ color: 'var(--color-texto-oscuro)' }}>
+                                            <td className="px-4 py-2.5 font-medium" style={{ color: 'var(--texto-primario)' }}>
                                                 {ing.nombre || '—'}
                                             </td>
-                                            <td className="px-4 py-2.5 font-bold" style={{ color: 'var(--color-primario-hover)' }}>
+                                            <td className="px-4 py-2.5 font-mono-num font-bold" style={{ color: 'var(--color-primario)' }}>
                                                 {formatearCantidadEscalada(ing.cantidad)}
                                             </td>
-                                            <td className="px-4 py-2.5" style={{ color: 'var(--color-texto-medio)' }}>
+                                            <td className="px-4 py-2.5" style={{ color: 'var(--texto-secundario)' }}>
                                                 {ing.unidad || '—'}
                                             </td>
                                         </tr>
@@ -259,57 +277,58 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                         </table>
                     </div>
                 ) : (
-                    <p className="text-sm" style={{ color: 'var(--color-texto-medio)' }}>Sin ingredientes registrados.</p>
+                    <p className="text-xs" style={{ color: 'var(--texto-muted)' }}>Sin insumos registrados.</p>
                 )}
             </div>
 
             {/* Pasos interactivos con barra de progreso */}
             <div>
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <h4 className="text-sm font-bold" style={{ color: 'var(--color-texto-oscuro)' }}>
-                        👨‍🍳 Ejecución Paso a Paso ({cantidadPasosListos}/{totalPasos} completados)
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: 'var(--texto-primario)' }}>
+                        <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--color-exito)' }} />
+                        <span>Protocolo Paso a Paso ({cantidadPasosListos}/{totalPasos})</span>
                     </h4>
-                    <span className="text-xs font-bold" style={{ color: 'var(--color-secundario)' }}>
+                    <span className="text-xs font-mono-num font-bold" style={{ color: 'var(--color-exito-texto)' }}>
                         {porcentajeProgreso}% completado
                     </span>
                 </div>
 
                 {totalPasos > 0 && (
-                    <div className="w-full h-2 rounded-full overflow-hidden mb-4" style={{ background: 'var(--color-gris-suave)' }}>
+                    <div className="w-full h-2 rounded-full overflow-hidden mb-4" style={{ background: 'var(--bg-secundario)' }}>
                         <div
                             className="h-full transition-all duration-300"
-                            style={{ width: `${porcentajeProgreso}%`, background: 'var(--color-secundario)' }}
+                            style={{ width: `${porcentajeProgreso}%`, background: 'var(--color-exito)' }}
                         />
                     </div>
                 )}
 
                 {receta.pasos?.length > 0 ? (
-                    <ol className="flex flex-col gap-3">
+                    <ol className="flex flex-col gap-2.5">
                         {receta.pasos.map((paso, idx) => {
                             const completado = Boolean(pasosCompletados[idx]);
                             return (
                                 <li
                                     key={idx}
                                     onClick={() => alternarPaso(idx)}
-                                    className="flex gap-3 items-start p-3 rounded-xl border cursor-pointer transition-all"
+                                    className="flex gap-3 items-start p-3.5 rounded-xl border cursor-pointer transition-all"
                                     style={{
-                                        borderColor: completado ? '#bfe0d1' : 'var(--color-borde)',
-                                        background: completado ? 'var(--color-verde-menta)' : '#fff',
+                                        borderColor: completado ? 'rgba(16, 185, 129, 0.35)' : 'var(--borde-sutil)',
+                                        background: completado ? 'var(--color-exito-bg)' : 'var(--bg-card)',
                                     }}
                                 >
                                     <span
-                                        className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mt-0.5"
+                                        className="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-mono-num font-bold mt-0.5"
                                         style={{
-                                            background: completado ? 'var(--color-secundario)' : 'var(--color-salmon-claro)',
-                                            color: completado ? '#fff' : 'var(--color-primario)',
+                                            background: completado ? 'var(--color-exito)' : 'var(--color-primario-suave)',
+                                            color: completado ? '#FFFFFF' : 'var(--color-primario)',
                                         }}
                                     >
                                         {completado ? '✓' : idx + 1}
                                     </span>
                                     <p
-                                        className="text-sm leading-relaxed flex-1"
+                                        className="text-xs sm:text-sm leading-relaxed flex-1"
                                         style={{
-                                            color: 'var(--color-texto-oscuro)',
+                                            color: 'var(--texto-primario)',
                                             textDecoration: completado ? 'line-through' : 'none',
                                         }}
                                     >
@@ -320,7 +339,7 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                         })}
                     </ol>
                 ) : (
-                    <p className="text-sm" style={{ color: 'var(--color-texto-medio)' }}>Sin pasos registrados.</p>
+                    <p className="text-xs" style={{ color: 'var(--texto-muted)' }}>Sin pasos registrados.</p>
                 )}
             </div>
         </div>
