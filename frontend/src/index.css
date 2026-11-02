@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ─── Variables de color (paleta pastel profesional) ─────────────────────── */
+:root {
+    --color-crema: #FFF8F0;
+    --color-salmon-claro: #FFD8C9;
+    --color-rosa-pastel: #F9C5C5;
+    --color-verde-menta: #C8EAD3;
+    --color-celeste: #C6E2F5;
+    --color-lavanda: #DDD6F5;
+    --color-gris-suave: #F4F4F6;
+    --color-texto-oscuro: #3D3D3D;
+    --color-texto-medio: #6B6B6B;
+    --color-borde: #E8E8EE;
+    --color-primario: #F0A598;
+    /* salmon-rosa — botones / acentos */
+    --color-primario-hover: #E8897A;
+    --color-secundario: #7BB8B4;
+    /* verde-azul suave — secundario */
+}
+
+/*
+ * NOTA: El reset de box-sizing, margin y padding se elimina intencionalmente.
+ * Tailwind v4 coloca sus utilitarios (px-4, mx-auto, etc.) dentro de
+ * @layer utilities. Un bloque `* { padding: 0 }` fuera de un @layer
+ * siempre gana en la cascada CSS sobre cualquier @layer, sin importar
+ * la especificidad — destruyendo todos los utilitarios de espaciado.
+ * El preflight de Tailwind ya cubre el reset necesario de forma segura.
+ */
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--color-crema);
+        color: var(--color-texto-oscuro);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+
+/* ─── Scrollbar personalizada ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-gris-suave);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primario);
+    border-radius: 8px;
+}
+
+/* ─── Clases utilitarias globales ─────────────────────────────────────────── */
+.btn-primario {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.25rem;
+    background: var(--color-primario);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(240, 165, 152, 0.35);
+}
+
+.btn-primario:hover {
+    background: var(--color-primario-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(240, 165, 152, 0.45);
+}
+
+.btn-primario:active {
+    transform: translateY(0);
+}
+
+.btn-secundario {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.25rem;
+    background: transparent;
+    color: var(--color-primario);
+    border: 1.5px solid var(--color-primario);
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secundario:hover {
+    background: var(--color-salmon-claro);
+}
+
+.btn-peligro {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    background: #fde8e8;
+    color: #c0392b;
+    border: 1.5px solid #f5c6c6;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-peligro:hover {
+    background: #f5c6c6;
+}
+
+.btn-editar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    background: #e8f4f8;
+    color: #2980b9;
+    border: 1.5px solid #c6dff0;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-editar:hover {
+    background: #c6dff0;
+}
+
+.btn-ver {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    background: #eef6ee;
+    color: #27ae60;
+    border: 1.5px solid #c3e6c3;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-ver:hover {
+    background: #c3e6c3;
+}
+
+.input-global {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    background: #fff;
+    border: 1.5px solid var(--color-borde);
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--color-texto-oscuro);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+}
+
+.input-global:focus {
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(240, 165, 152, 0.18);
+}
+
+.input-global::placeholder {
+    color: #b0b0b8;
+}
+
+.tarjeta {
+    background: #fff;
+    border: 1px solid var(--color-borde);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.tarjeta:hover {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.09);
+}
+
+/* ─── Animaciones de entrada ──────────────────────────────────────────────── */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animar-entrada {
+    animation: fadeInUp 0.5s ease both;
+}
