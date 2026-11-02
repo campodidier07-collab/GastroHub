@@ -82,6 +82,16 @@ export const alternarFavoritoReceta = async (id) => {
 };
 
 /**
+ * Duplicar / clonar una ficha técnica existente en 1 clic (POST /:id/duplicar).
+ * @param {string} id - ID de la receta original.
+ * @returns {Promise<Object>} Nueva receta clonada.
+ */
+export const duplicarReceta = async (id) => {
+    const respuesta = await clienteHttp.post(`/${id}/duplicar`);
+    return respuesta.data;
+};
+
+/**
  * Eliminar una receta por su ID.
  * @param {string} id - ID de la receta a eliminar.
  * @returns {Promise<Object>} Mensaje de confirmación.

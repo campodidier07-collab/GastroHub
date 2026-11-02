@@ -4,6 +4,7 @@ import {
     crearReceta as apiCrearReceta,
     actualizarReceta as apiActualizarReceta,
     alternarFavoritoReceta as apiAlternarFavoritoReceta,
+    duplicarReceta as apiDuplicarReceta,
     eliminarReceta as apiEliminarReceta,
 } from '../services/recetaService';
 
@@ -54,6 +55,12 @@ export const RecetaProvider = ({ children }) => {
         return respuesta.receta;
     }, []);
 
+    const clonarReceta = useCallback(async (id) => {
+        const respuesta = await apiDuplicarReceta(id);
+        setListaRecetas((prev) => [respuesta.receta, ...prev]);
+        return respuesta.receta;
+    }, []);
+
     const borrarReceta = useCallback(async (id) => {
         await apiEliminarReceta(id);
         setListaRecetas((prev) => prev.filter((receta) => receta._id !== id));
@@ -67,6 +74,7 @@ export const RecetaProvider = ({ children }) => {
         agregarReceta,
         modificarReceta,
         toggleFavorito,
+        clonarReceta,
         borrarReceta,
     };
 

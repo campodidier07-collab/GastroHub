@@ -5,6 +5,7 @@ import { useRecetas } from '../../context/RecetaContext';
 import Modal from '../../components/ui/Modal';
 import DetalleReceta from '../../components/recetas/DetalleReceta';
 import FormularioReceta from '../../components/recetas/FormularioReceta';
+import PlanificadorProduccionModal from '../../components/recetas/PlanificadorProduccionModal';
 import Spinner from '../../components/ui/Spinner';
 
 /**
@@ -18,10 +19,12 @@ const DashboardView = () => {
         cargarRecetas,
         agregarReceta,
         toggleFavorito,
+        clonarReceta,
     } = useRecetas();
 
     const [recetaDetalle, setRecetaDetalle] = useState(null);
     const [modalCrear, setModalCrear] = useState(false);
+    const [modalPlanificador, setModalPlanificador] = useState(false);
     const [guardando, setGuardando] = useState(false);
     const [errorFormulario, setErrorFormulario] = useState(null);
 
@@ -40,6 +43,12 @@ const DashboardView = () => {
         const promedioCalorias = conCalorias.length > 0
             ? Math.round(conCalorias.reduce((acc, r) => acc + r.calorias, 0) / conCalorias.length)
             : 0;
+
+        const conCosto = listaRecetas.filter((r) => typeof r.costoPorPorcion === 'number' && r.costoPorPorcion > 0);
+        const costoPromedio = conCosto.length > 0
+            ? Number((conCosto.reduce((acc, r) => acc + r.costoPorPorcion, 0) / conCosto.length).toFixed(2))
+            : 0;
+        const precioCartaSugerido = costoPromedio > 0 ? Number((costoPromedio / 0.3).toFixed(2)) : 0;
 
         const totalIngredientes = listaRecetas.reduce(
             (acc, r) => acc + (r.ingredientes?.length || 0),
@@ -78,6 +87,8 @@ const DashboardView = () => {
             favoritas,
             porcentajeFavoritas,
             promedioCalorias,
+            costoPromedio,
+            precioCartaSugerido,
             totalIngredientes,
             promedioIngredientes,
             distribucionCategorias,
@@ -123,6 +134,15 @@ const DashboardView = () => {
         }
     };
 
+    const manejarClonar = async (receta) => {
+        try {
+            const clonada = await clonarReceta(receta._id);
+            toast.success(`Ficha duplicada: "${clonada.titulo}"`);
+        } catch {
+            toast.error('No se pudo duplicar la ficha técnica');
+        }
+    };
+
     if (cargando && listaRecetas.length === 0) {
         return (
             <div className="p-6 max-w-7xl mx-auto">
@@ -154,6 +174,14 @@ const DashboardView = () => {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2.5">
+                    <button
+                        type="button"
+                        onClick={() => setModalPlanificador(true)}
+                        className="btn-secundario"
+                    >
+                        <i className="fa-solid fa-cart-flatbed text-xs" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
+                        <span>Planificador Mise en Place</span>
+                    </button>
                     <button
                         type="button"
                         onClick={exportarCatalogoJson}
@@ -204,6 +232,33 @@ const DashboardView = () => {
                 <div className="tarjeta p-5 flex flex-col justify-between gap-3">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>
+                            Costo Medio / Escandallo
+                        </span>
+                        <div
+                            className="w-9 h-9 rounded-xl flex items-center justify-center"
+                            style={{ background: 'var(--color-exito-bg)', color: 'var(--color-exito)' }}
+                        >
+                            <i className="fa-solid fa-coins text-sm" aria-hidden="true" />
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-baseline gap-2">
+                            <p className="text-3xl font-extrabold font-mono-num" style={{ color: 'var(--texto-primario)' }}>
+                                ${analitica.costoPromedio.toFixed(2)}
+                            </p>
+                            <span className="text-xs font-semibold" style={{ color: 'var(--texto-muted)' }}>
+                                / porción
+                            </span>
+                        </div>
+                        <p className="text-[11px] mt-1 font-mono-num" style={{ color: 'var(--color-exito-texto)' }}>
+                            Precio carta sugerido: ${analitica.precioCartaSugerido.toFixed(2)} (30% FC)
+                        </p>
+                    </div>
+                </div>
+
+                <div className="tarjeta p-5 flex flex-col justify-between gap-3">
+                    <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>
                             Selección del Chef (Favoritas)
                         </span>
                         <div
@@ -234,40 +289,11 @@ const DashboardView = () => {
                 <div className="tarjeta p-5 flex flex-col justify-between gap-3">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>
-                            Densidad Energética Media
-                        </span>
-                        <div
-                            className="w-9 h-9 rounded-xl flex items-center justify-center"
-                            style={{ background: 'var(--color-info-bg)', color: 'var(--color-info)' }}
-                        >
-                            <i className="fa-solid fa-fire-flame-curved text-sm" aria-hidden="true" />
-                        </div>
-                    </div>
-                    <div>
-                        <div className="flex items-baseline gap-1.5">
-                            <p className="text-3xl font-extrabold font-mono-num" style={{ color: 'var(--texto-primario)' }}>
-                                {analitica.promedioCalorias || '—'}
-                            </p>
-                            {analitica.promedioCalorias > 0 && (
-                                <span className="text-xs font-semibold" style={{ color: 'var(--texto-muted)' }}>
-                                    kcal / porción
-                                </span>
-                            )}
-                        </div>
-                        <p className="text-[11px] mt-1" style={{ color: 'var(--texto-muted)' }}>
-                            Balance nutricional estandarizado
-                        </p>
-                    </div>
-                </div>
-
-                <div className="tarjeta p-5 flex flex-col justify-between gap-3">
-                    <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>
                             Insumos en Mise en Place
                         </span>
                         <div
                             className="w-9 h-9 rounded-xl flex items-center justify-center"
-                            style={{ background: 'var(--color-exito-bg)', color: 'var(--color-exito)' }}
+                            style={{ background: 'var(--color-info-bg)', color: 'var(--color-info)' }}
                         >
                             <i className="fa-solid fa-layer-group text-sm" aria-hidden="true" />
                         </div>
@@ -589,14 +615,21 @@ const DashboardView = () => {
                 abierto={Boolean(recetaDetalle)}
                 alCerrar={() => setRecetaDetalle(null)}
                 titulo="Ficha Técnica & Modo Cocina"
-                subtitulo="Escala porciones o marca tu avance paso a paso"
+                subtitulo="Escala porciones, consulta escandallo o activa el cronómetro en vivo"
                 tamano="lg"
             >
                 <DetalleReceta
                     receta={recetaDetalle}
                     alToggleFavorito={manejarToggleFavorito}
+                    alClonar={manejarClonar}
                 />
             </Modal>
+
+            <PlanificadorProduccionModal
+                abierto={modalPlanificador}
+                alCerrar={() => setModalPlanificador(false)}
+                recetas={listaRecetas}
+            />
 
             <Modal
                 abierto={modalCrear}

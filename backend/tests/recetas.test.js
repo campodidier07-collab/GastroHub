@@ -53,6 +53,7 @@ test('GET /api/recetas/estadisticas calcula KPIs del catálogo', async () => {
     assert.equal(stats.totalRecetas, 6);
     assert.equal(stats.totalFavoritas, 4);
     assert.ok(stats.categoriasActivas >= 4);
+    assert.ok(stats.costoPromedioPorPorcion > 0);
 });
 
 test('POST /api/recetas crea una receta completa con campos gourmet y valida payload', async () => {
@@ -64,6 +65,8 @@ test('POST /api/recetas crea una receta completa con campos gourmet y valida pay
         tiempo: '20 minutos',
         porciones: 2,
         calorias: 310,
+        costoPorPorcion: 6.25,
+        etiquetas: ['Sin Gluten', 'Alto en Proteína'],
         favorito: true,
         ingredientes: [
             { nombre: 'Atún rojo fresco', cantidad: 250, unidad: 'gr' },
@@ -132,6 +135,20 @@ test('PATCH /api/recetas/:id/favorito alterna el estado favorito', async () => {
     assert.equal(res.status, 200);
     const data = await res.json();
     assert.equal(data.receta.favorito, true);
+});
+
+test('POST /api/recetas/:id/duplicar clona una ficha tecnica existente con nuevo ID', async () => {
+    const idExistente = '6726a1000000000000000001';
+    const res = await fetch(`${baseUrl}/api/recetas/${idExistente}/duplicar`, {
+        method: 'POST'
+    });
+
+    assert.equal(res.status, 201);
+    const data = await res.json();
+    assert.match(data.receta.titulo, /\(Variante Chef\)$/);
+    assert.notEqual(data.receta._id, idExistente);
+    assert.equal(data.receta.favorito, false);
+    assert.equal(data.receta.costoPorPorcion, 6.5);
 });
 
 test('DELETE /api/recetas/:id elimina la receta correctamente', async () => {

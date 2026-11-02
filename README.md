@@ -183,7 +183,7 @@ cd frontend && npm run lint && npm run build
 
 ## 👨‍💻 Autor
 
-**Didier Puentes** — *Full Stack Developer*
+**Didier Puentes** — *Developer Junior Full Stack *
 - GitHub: [@campodidier07-collab](https://github.com/campodidier07-collab)
 
 ---

@@ -26,6 +26,8 @@ const construirRecetaConDefaults = (datos, parcial = null) => {
         dificultad: datos.dificultad ?? 'Media',
         porciones: datos.porciones ?? 4,
         calorias: datos.calorias !== undefined ? datos.calorias : null,
+        costoPorPorcion: datos.costoPorPorcion !== undefined ? datos.costoPorPorcion : null,
+        etiquetas: Array.isArray(datos.etiquetas) ? datos.etiquetas : [],
         imagenUrl: datos.imagenUrl ?? '',
         favorito: datos.favorito ?? false,
         ingredientes: Array.isArray(datos.ingredientes) ? datos.ingredientes : [],
@@ -85,10 +87,16 @@ exports.obtenerEstadisticas = async (req, res) => {
             return acc;
         }, {});
 
+        const conCosto = lista.filter((r) => typeof r.costoPorPorcion === 'number' && r.costoPorPorcion > 0);
+        const costoPromedioPorPorcion = conCosto.length > 0
+            ? Number((conCosto.reduce((acc, r) => acc + r.costoPorPorcion, 0) / conCosto.length).toFixed(2))
+            : 0;
+
         return res.status(200).json({
             totalRecetas,
             totalFavoritas,
             categoriasActivas: Object.keys(porCategoria).length,
+            costoPromedioPorPorcion,
             porCategoria,
             porDificultad
         });
@@ -224,6 +232,8 @@ exports.replaceReceta = async (req, res) => {
         dificultad: validatedData.dificultad ?? 'Media',
         porciones: validatedData.porciones ?? 4,
         calorias: validatedData.calorias !== undefined ? validatedData.calorias : null,
+        costoPorPorcion: validatedData.costoPorPorcion !== undefined ? validatedData.costoPorPorcion : null,
+        etiquetas: validatedData.etiquetas ?? [],
         imagenUrl: validatedData.imagenUrl ?? '',
         favorito: validatedData.favorito ?? false,
         ingredientes: validatedData.ingredientes ?? [],
@@ -314,6 +324,56 @@ exports.toggleFavorito = async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({ error: 'Surgio un error inesperado' });
+    }
+};
+
+// POST /api/recetas/:id/duplicar
+exports.duplicarReceta = async (req, res) => {
+    const { id } = req.params;
+
+    if (!esObjectIdValido(id)) {
+        return res.status(400).json({ error: 'El id de la receta no es valido' });
+    }
+
+    try {
+        if (usarModoMemoria()) {
+            const original = memoriaRecetas.find((r) => String(r._id) === id);
+            if (!original) {
+                return res.status(404).json({ error: 'Receta no encontrada' });
+            }
+
+            const copia = construirRecetaConDefaults({
+                ...structuredClone(original),
+                titulo: `${original.titulo} (Variante Chef)`,
+                favorito: false
+            });
+            memoriaRecetas.unshift(copia);
+
+            return res.status(201).json({
+                mensaje: 'Receta duplicada exitosamente',
+                receta: copia
+            });
+        }
+
+        const original = await Receta.findById(id).lean();
+        if (!original) {
+            return res.status(404).json({ error: 'Receta no encontrada' });
+        }
+
+        const { _id, createdAt, updatedAt, __v, ...restoCampos } = original;
+        const nuevaCopia = new Receta({
+            ...restoCampos,
+            titulo: `${original.titulo} (Variante Chef)`,
+            favorito: false
+        });
+        await nuevaCopia.save();
+
+        return res.status(201).json({
+            mensaje: 'Receta duplicada exitosamente',
+            receta: nuevaCopia
+        });
+    } catch (error) {
+        return res.status(500).json({ error: 'Surgio un error inesperado al duplicar la receta' });
     }
 };
 

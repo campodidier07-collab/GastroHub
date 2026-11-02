@@ -8,6 +8,8 @@ const RECETAS_INICIALES = [
         tiempo: '40 minutos',
         porciones: 4,
         calorias: 520,
+        costoPorPorcion: 6.5,
+        etiquetas: ['Vegetariano', 'Sin Gluten', 'Lácteos'],
         imagenUrl: 'https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?auto=format&fit=crop&w=900&q=80',
         favorito: true,
         ingredientes: [
@@ -39,6 +41,8 @@ const RECETAS_INICIALES = [
         tiempo: '25 minutos',
         porciones: 4,
         calorias: 290,
+        costoPorPorcion: 5.2,
+        etiquetas: ['Sin Gluten', 'Alto en Proteína', 'Mariscos', 'Picante'],
         imagenUrl: 'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?auto=format&fit=crop&w=900&q=80',
         favorito: true,
         ingredientes: [
@@ -69,6 +73,8 @@ const RECETAS_INICIALES = [
         tiempo: '30 minutos',
         porciones: 2,
         calorias: 480,
+        costoPorPorcion: 7.8,
+        etiquetas: ['Sin Gluten', 'Alto en Proteína', 'Frutos Secos'],
         imagenUrl: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=900&q=80',
         favorito: false,
         ingredientes: [
@@ -97,6 +103,8 @@ const RECETAS_INICIALES = [
         tiempo: '35 minutos',
         porciones: 4,
         calorias: 410,
+        costoPorPorcion: 3.4,
+        etiquetas: ['Vegetariano', 'Lácteos'],
         imagenUrl: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80',
         favorito: true,
         ingredientes: [
@@ -126,6 +134,8 @@ const RECETAS_INICIALES = [
         tiempo: '25 minutos',
         porciones: 2,
         calorias: 440,
+        costoPorPorcion: 4.1,
+        etiquetas: ['Sin Gluten', 'Alto en Proteína'],
         imagenUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80',
         favorito: false,
         ingredientes: [
@@ -154,6 +164,8 @@ const RECETAS_INICIALES = [
         tiempo: '90 minutos',
         porciones: 4,
         calorias: 630,
+        costoPorPorcion: 5.9,
+        etiquetas: ['Alto en Proteína'],
         imagenUrl: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=900&q=80',
         favorito: true,
         ingredientes: [

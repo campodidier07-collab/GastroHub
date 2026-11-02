@@ -9,6 +9,8 @@ const CAMPOS_RECETA_PERMITIDOS = [
     'dificultad',
     'porciones',
     'calorias',
+    'costoPorPorcion',
+    'etiquetas',
     'imagenUrl',
     'favorito',
     'ingredientes',
@@ -161,6 +163,28 @@ const validarPayloadReceta = (payload, opciones = {}) => {
             || payload.calorias < 0
         ) {
             return { error: 'El campo calorias debe ser un numero mayor o igual a 0' };
+        }
+    }
+
+    if (
+        Object.prototype.hasOwnProperty.call(payload, 'costoPorPorcion')
+        && payload.costoPorPorcion !== null
+    ) {
+        if (
+            typeof payload.costoPorPorcion !== 'number'
+            || Number.isNaN(payload.costoPorPorcion)
+            || payload.costoPorPorcion < 0
+        ) {
+            return { error: 'El campo costoPorPorcion debe ser un numero mayor o igual a 0' };
+        }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(payload, 'etiquetas')) {
+        if (
+            !Array.isArray(payload.etiquetas)
+            || !payload.etiquetas.every((etiqueta) => typeof etiqueta === 'string')
+        ) {
+            return { error: 'El campo etiquetas debe ser un arreglo de textos' };
         }
     }
 

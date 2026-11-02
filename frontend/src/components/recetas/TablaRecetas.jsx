@@ -1,3 +1,5 @@
+import { obtenerMetaEtiqueta } from '../../utils/etiquetasGastronomicas';
+
 const ESTILOS_DIFICULTAD = {
     'Fácil': {
         bg: 'var(--color-exito-bg)',
@@ -27,6 +29,7 @@ const TablaRecetas = ({
     alCambiarOrden,
     alVerDetalle,
     alEditar,
+    alClonar,
     alEliminar,
     alToggleFavorito,
 }) => {
@@ -174,7 +177,34 @@ const TablaRecetas = ({
                                                 <span>{receta.calorias} kcal</span>
                                             </span>
                                         ) : null}
+                                        {receta.costoPorPorcion ? (
+                                            <span
+                                                className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md font-mono-num font-bold"
+                                                style={{ background: 'var(--color-exito-bg)', color: 'var(--color-exito-texto)' }}
+                                            >
+                                                <i className="fa-solid fa-coins text-[10px]" aria-hidden="true" />
+                                                <span>${Number(receta.costoPorPorcion).toFixed(2)}/porc.</span>
+                                            </span>
+                                        ) : null}
                                     </div>
+
+                                    {receta.etiquetas?.length > 0 && (
+                                        <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                                            {receta.etiquetas.slice(0, 3).map((etq) => {
+                                                const meta = obtenerMetaEtiqueta(etq);
+                                                return (
+                                                    <span
+                                                        key={etq}
+                                                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold"
+                                                        style={{ background: meta.bg, color: meta.color }}
+                                                    >
+                                                        <i className={`${meta.icono} text-[9px]`} aria-hidden="true" />
+                                                        <span>{meta.nombre}</span>
+                                                    </span>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -190,6 +220,17 @@ const TablaRecetas = ({
                                         <i className="fa-regular fa-eye text-xs" aria-hidden="true" />
                                         <span>Ficha</span>
                                     </button>
+                                    {alClonar && (
+                                        <button
+                                            type="button"
+                                            className="btn-secundario py-1.5 px-2.5 text-xs"
+                                            onClick={() => alClonar(receta)}
+                                            title="Duplicar / clonar ficha en 1 clic"
+                                            aria-label="Duplicar receta"
+                                        >
+                                            <i className="fa-regular fa-clone text-xs" aria-hidden="true" />
+                                        </button>
+                                    )}
                                     <button type="button" className="btn-editar" onClick={() => alEditar(receta)} title="Editar receta" aria-label="Editar receta">
                                         <i className="fa-solid fa-pen text-xs" aria-hidden="true" />
                                     </button>
@@ -333,7 +374,7 @@ const TablaRecetas = ({
                                     <td className="px-4 py-3.5 text-xs font-mono-num" style={{ color: 'var(--texto-secundario)' }}>
                                         <div>{receta.tiempo}</div>
                                         <div className="text-[11px]" style={{ color: 'var(--texto-muted)' }}>
-                                            {receta.porciones || 4} porc. {receta.calorias ? `· ${receta.calorias} kcal` : ''}
+                                            {receta.porciones || 4} porc. {receta.costoPorPorcion ? `· $${Number(receta.costoPorPorcion).toFixed(2)}/porc.` : ''}
                                         </div>
                                     </td>
                                     <td className="px-4 py-3.5 text-xs font-mono-num" style={{ color: 'var(--texto-secundario)' }}>
@@ -348,6 +389,17 @@ const TablaRecetas = ({
                                                 <i className="fa-regular fa-eye text-xs" aria-hidden="true" />
                                                 <span>Ficha</span>
                                             </button>
+                                            {alClonar && (
+                                                <button
+                                                    type="button"
+                                                    className="btn-secundario py-1.5 px-2.5 text-xs"
+                                                    onClick={() => alClonar(receta)}
+                                                    title="Duplicar ficha en 1 clic"
+                                                    aria-label="Duplicar receta"
+                                                >
+                                                    <i className="fa-regular fa-clone text-xs" aria-hidden="true" />
+                                                </button>
+                                            )}
                                             <button type="button" className="btn-editar" onClick={() => alEditar(receta)} aria-label="Editar receta">
                                                 <i className="fa-solid fa-pen text-xs" aria-hidden="true" />
                                             </button>

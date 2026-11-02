@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CATALOGO_ETIQUETAS } from '../../utils/etiquetasGastronomicas';
 
 const CATEGORIAS = [
     'Entrada',
@@ -105,6 +106,8 @@ const estadoInicial = {
     tiempo: '',
     porciones: 4,
     calorias: '',
+    costoPorPorcion: '',
+    etiquetas: [],
     imagenUrl: '',
     favorito: false,
     ingredientes: [{ nombre: '', cantidad: '', unidad: '' }],
@@ -139,6 +142,8 @@ const FormularioReceta = ({
                 tiempo: recetaInicial.tiempo || '',
                 porciones: recetaInicial.porciones ?? 4,
                 calorias: recetaInicial.calorias ?? '',
+                costoPorPorcion: recetaInicial.costoPorPorcion ?? '',
+                etiquetas: Array.isArray(recetaInicial.etiquetas) ? recetaInicial.etiquetas : [],
                 imagenUrl: recetaInicial.imagenUrl || '',
                 favorito: Boolean(recetaInicial.favorito),
                 ingredientes: recetaInicial.ingredientes?.length
@@ -191,6 +196,10 @@ const FormularioReceta = ({
             calorias: formulario.calorias === '' || formulario.calorias === null
                 ? null
                 : Number(formulario.calorias),
+            costoPorPorcion: formulario.costoPorPorcion === '' || formulario.costoPorPorcion === null
+                ? null
+                : Number(formulario.costoPorPorcion),
+            etiquetas: Array.isArray(formulario.etiquetas) ? formulario.etiquetas : [],
             imagenUrl: formulario.imagenUrl.trim(),
             favorito: Boolean(formulario.favorito),
             ingredientes: formulario.ingredientes
@@ -205,6 +214,19 @@ const FormularioReceta = ({
     const manejarCampoSimple = (campo, valor) => {
         setFormulario((prev) => ({ ...prev, [campo]: valor }));
         if (errores[campo]) setErrores((prev) => ({ ...prev, [campo]: undefined }));
+    };
+
+    const alternarEtiqueta = (nombreEtiqueta) => {
+        setFormulario((prev) => {
+            const actual = Array.isArray(prev.etiquetas) ? prev.etiquetas : [];
+            const existe = actual.includes(nombreEtiqueta);
+            return {
+                ...prev,
+                etiquetas: existe
+                    ? actual.filter((e) => e !== nombreEtiqueta)
+                    : [...actual, nombreEtiqueta],
+            };
+        });
     };
 
     const cambiarIngrediente = (indice, campo, valor) => {
@@ -340,9 +362,9 @@ const FormularioReceta = ({
                 />
             </div>
 
-            {/* Parámetros Técnicos */}
+            {/* Parámetros Técnicos y Escandallo */}
             <div
-                className="p-4 rounded-xl border grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3"
+                className="p-4 rounded-xl border grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-3"
                 style={{ background: 'var(--bg-secundario)', borderColor: 'var(--borde-sutil)' }}
             >
                 <div>
@@ -421,6 +443,56 @@ const FormularioReceta = ({
                         placeholder="Ej: 520"
                         className="input-global font-mono-num"
                     />
+                </div>
+
+                <div>
+                    <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
+                        <i className="fa-solid fa-coins text-[11px] text-amber-500" aria-hidden="true" />
+                        <span>Costo / porc. ($)</span>
+                    </label>
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        value={formulario.costoPorPorcion}
+                        onChange={(e) => manejarCampoSimple('costoPorPorcion', e.target.value)}
+                        placeholder="Ej: 5.50"
+                        className="input-global font-mono-num"
+                    />
+                    {Number(formulario.costoPorPorcion) > 0 && (
+                        <p className="text-[10px] font-mono-num mt-1" style={{ color: 'var(--color-exito-texto)' }}>
+                            Carta sug.: ${(Number(formulario.costoPorPorcion) / 0.3).toFixed(2)}
+                        </p>
+                    )}
+                </div>
+            </div>
+
+            {/* Selector de Etiquetas Dietéticas y Alérgenos */}
+            <div>
+                <label className="flex items-center gap-1.5 text-xs font-semibold mb-2" style={{ color: 'var(--texto-primario)' }}>
+                    <i className="fa-solid fa-tags text-xs" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
+                    <span>Etiquetas Dietéticas y Control de Alérgenos</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                    {CATALOGO_ETIQUETAS.map((etq) => {
+                        const seleccionada = formulario.etiquetas?.includes(etq.nombre);
+                        return (
+                            <button
+                                key={etq.nombre}
+                                type="button"
+                                onClick={() => alternarEtiqueta(etq.nombre)}
+                                className="px-3 py-1.5 rounded-xl text-xs font-semibold border inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                                style={{
+                                    background: seleccionada ? etq.bg : 'var(--bg-secundario)',
+                                    color: seleccionada ? etq.color : 'var(--texto-secundario)',
+                                    borderColor: seleccionada ? etq.color : 'var(--borde-sutil)',
+                                }}
+                            >
+                                <i className={`${etq.icono} text-[11px]`} aria-hidden="true" />
+                                <span>{etq.nombre}</span>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 

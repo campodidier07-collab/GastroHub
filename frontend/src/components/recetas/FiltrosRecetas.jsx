@@ -1,3 +1,5 @@
+import { CATALOGO_ETIQUETAS } from '../../utils/etiquetasGastronomicas';
+
 const CATEGORIAS = [
     'Entrada',
     'Plato Fuerte',
@@ -19,6 +21,7 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
         filtros.busqueda ||
         filtros.categoria ||
         filtros.dificultad ||
+        filtros.etiqueta ||
         filtros.tiempoFiltro ||
         filtros.minIngredientes !== '' ||
         filtros.soloFavoritas ||
@@ -135,6 +138,8 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                         <option value="mas_ingredientes">Mayor n.º insumos</option>
                         <option value="menos_ingredientes">Menor n.º insumos</option>
                         <option value="menos_calorias">Menor densidad kcal</option>
+                        <option value="menor_costo">Menor costo / porción</option>
+                        <option value="mayor_costo">Mayor costo / porción</option>
                     </select>
                 </div>
             </div>
@@ -183,6 +188,33 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                                 color: 'var(--texto-primario)',
                             }}
                         />
+                    </div>
+
+                    {/* Filtro Rápido por Etiqueta Dietética / Alérgeno */}
+                    <div className="flex flex-wrap items-center gap-1.5">
+                        {CATALOGO_ETIQUETAS.slice(0, 5).map((etq) => {
+                            const activa = filtros.etiqueta === etq.nombre;
+                            return (
+                                <button
+                                    key={etq.nombre}
+                                    type="button"
+                                    onClick={() =>
+                                        alCambiarFiltros({
+                                            etiqueta: activa ? '' : etq.nombre,
+                                        })
+                                    }
+                                    className="px-2.5 py-1 rounded-lg text-[11px] font-semibold border inline-flex items-center gap-1 transition-all cursor-pointer"
+                                    style={{
+                                        background: activa ? etq.bg : 'var(--bg-secundario)',
+                                        color: activa ? etq.color : 'var(--texto-secundario)',
+                                        borderColor: activa ? etq.color : 'var(--borde-sutil)',
+                                    }}
+                                >
+                                    <i className={`${etq.icono} text-[10px]`} aria-hidden="true" />
+                                    <span>{etq.nombre}</span>
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 

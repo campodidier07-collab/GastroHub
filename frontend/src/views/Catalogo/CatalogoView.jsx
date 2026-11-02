@@ -6,6 +6,7 @@ import FiltrosRecetas from '../../components/recetas/FiltrosRecetas';
 import TablaRecetas from '../../components/recetas/TablaRecetas';
 import FormularioReceta from '../../components/recetas/FormularioReceta';
 import DetalleReceta from '../../components/recetas/DetalleReceta';
+import PlanificadorProduccionModal from '../../components/recetas/PlanificadorProduccionModal';
 import Modal from '../../components/ui/Modal';
 import ConfirmacionModal from '../../components/ui/ConfirmacionModal';
 import Spinner from '../../components/ui/Spinner';
@@ -14,6 +15,7 @@ const FILTROS_INICIALES = {
     busqueda: '',
     categoria: '',
     dificultad: '',
+    etiqueta: '',
     tiempoFiltro: '',
     minIngredientes: '',
     soloFavoritas: false,
@@ -35,6 +37,7 @@ const CatalogoView = () => {
         agregarReceta,
         modificarReceta,
         toggleFavorito,
+        clonarReceta,
         borrarReceta,
     } = useRecetas();
 
@@ -49,6 +52,7 @@ const CatalogoView = () => {
     const [paginaActual, setPaginaActual] = useState(1);
 
     const [modalCrear, setModalCrear] = useState(false);
+    const [modalPlanificador, setModalPlanificador] = useState(false);
     const [modalEditar, setModalEditar] = useState({ abierto: false, receta: null });
     const [modalDetalle, setModalDetalle] = useState({ abierto: false, receta: null });
     const [modalEliminar, setModalEliminar] = useState({ abierto: false, receta: null });
@@ -132,6 +136,10 @@ const CatalogoView = () => {
             resultado = resultado.filter((r) => (r.dificultad || 'Media') === filtros.dificultad);
         }
 
+        if (filtros.etiqueta) {
+            resultado = resultado.filter((r) => r.etiquetas?.includes(filtros.etiqueta));
+        }
+
         if (filtros.soloFavoritas) {
             resultado = resultado.filter((r) => Boolean(r.favorito));
         }
@@ -171,6 +179,12 @@ const CatalogoView = () => {
                 break;
             case 'menos_calorias':
                 resultado.sort((a, b) => (a.calorias ?? 9999) - (b.calorias ?? 9999));
+                break;
+            case 'menor_costo':
+                resultado.sort((a, b) => (a.costoPorPorcion ?? 9999) - (b.costoPorPorcion ?? 9999));
+                break;
+            case 'mayor_costo':
+                resultado.sort((a, b) => (b.costoPorPorcion ?? 0) - (a.costoPorPorcion ?? 0));
                 break;
             default:
                 break;
@@ -230,6 +244,15 @@ const CatalogoView = () => {
             );
         } catch {
             toast.error('No se pudo actualizar el estado de favorito');
+        }
+    };
+
+    const manejarClonar = async (receta) => {
+        try {
+            const clonada = await clonarReceta(receta._id);
+            toast.success(`Ficha duplicada: "${clonada.titulo}"`);
+        } catch {
+            toast.error('No se pudo clonar la ficha técnica');
         }
     };
 
@@ -298,6 +321,15 @@ const CatalogoView = () => {
                             <span>Tabla</span>
                         </button>
                     </div>
+
+                    <button
+                        type="button"
+                        className="btn-secundario"
+                        onClick={() => setModalPlanificador(true)}
+                    >
+                        <i className="fa-solid fa-cart-flatbed text-xs" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
+                        <span>Planificador Mise en Place</span>
+                    </button>
 
                     <button
                         type="button"
@@ -402,6 +434,7 @@ const CatalogoView = () => {
                             setErrorFormulario(null);
                             setModalEditar({ abierto: true, receta });
                         }}
+                        alClonar={manejarClonar}
                         alEliminar={(receta) => setModalEliminar({ abierto: true, receta })}
                         alToggleFavorito={manejarToggleFavorito}
                     />
@@ -504,6 +537,7 @@ const CatalogoView = () => {
                 <DetalleReceta
                     receta={modalDetalle.receta}
                     alToggleFavorito={manejarToggleFavorito}
+                    alClonar={manejarClonar}
                     alEditar={(receta) => {
                         setModalDetalle({ abierto: false, receta: null });
                         setErrorFormulario(null);
@@ -511,6 +545,12 @@ const CatalogoView = () => {
                     }}
                 />
             </Modal>
+
+            <PlanificadorProduccionModal
+                abierto={modalPlanificador}
+                alCerrar={() => setModalPlanificador(false)}
+                recetas={listaRecetas}
+            />
 
             <ConfirmacionModal
                 abierto={modalEliminar.abierto}

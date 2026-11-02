@@ -6,6 +6,7 @@ router.get('/', recetaController.obtenerRecetas);
 router.get('/estadisticas', recetaController.obtenerEstadisticas);
 router.get('/:id', recetaController.obtenerRecetaPorId);
 router.post('/', recetaController.crearReceta);
+router.post('/:id/duplicar', recetaController.duplicarReceta);
 router.patch('/:id/favorito', recetaController.toggleFavorito);
 router.patch('/:id', recetaController.updateReceta);
 router.put('/:id', recetaController.replaceReceta);

@@ -13,6 +13,17 @@ const CATEGORIAS_VALIDAS = [
 
 const DIFICULTADES_VALIDAS = ['Fácil', 'Media', 'Alta'];
 
+const ETIQUETAS_VALIDAS = [
+    'Sin Gluten',
+    'Vegetariano',
+    'Vegano',
+    'Alto en Proteína',
+    'Lácteos',
+    'Frutos Secos',
+    'Mariscos',
+    'Picante'
+];
+
 const ingredienteSchema = new mongoose.Schema({
     nombre: {
         type: String,
@@ -72,6 +83,15 @@ const recetaSchema = new mongoose.Schema({
         min: [0, 'Las calorías no pueden ser negativas'],
         default: null
     },
+    costoPorPorcion: {
+        type: Number,
+        min: [0, 'El costo por porción no puede ser negativo'],
+        default: null
+    },
+    etiquetas: {
+        type: [String],
+        default: []
+    },
     imagenUrl: {
         type: String,
         trim: true,
@@ -94,3 +114,4 @@ const recetaSchema = new mongoose.Schema({
 module.exports = mongoose.model('Receta', recetaSchema);
 module.exports.CATEGORIAS_VALIDAS = CATEGORIAS_VALIDAS;
 module.exports.DIFICULTADES_VALIDAS = DIFICULTADES_VALIDAS;
+module.exports.ETIQUETAS_VALIDAS = ETIQUETAS_VALIDAS;
