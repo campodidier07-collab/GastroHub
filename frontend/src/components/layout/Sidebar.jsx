@@ -1,36 +1,17 @@
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
-import {
-    ChefHat,
-    LayoutDashboard,
-    BookOpen,
-    Star,
-    Sparkles,
-    ChevronLeft,
-    ChevronRight,
-    Utensils,
-    Flame,
-    Salad,
-    Soup,
-    Wine,
-    IceCreamBowl,
-    Layers,
-    Activity,
-    X,
-} from 'lucide-react';
 import { useRecetas } from '../../context/RecetaContext';
 
 const ICONOS_CAT = {
-    'Plato Fuerte': Utensils,
-    'Entrada': Flame,
-    'Postre': IceCreamBowl,
-    'Ensalada': Salad,
-    'Sopa': Soup,
-    'Bebida': Wine,
+    'Plato Fuerte': 'fa-solid fa-utensils',
+    'Entrada': 'fa-solid fa-fire-flame-curved',
+    'Postre': 'fa-solid fa-ice-cream',
+    'Ensalada': 'fa-solid fa-leaf',
+    'Sopa': 'fa-solid fa-bowl-food',
+    'Bebida': 'fa-solid fa-martini-glass-citrus',
 };
 
 /**
- * Sidebar empresarial colapsable estilo Linear / Supabase / Clerk.
- * Soporta modo expandido (256px), modo compacto de íconos (74px) y drawer móvil.
+ * Sidebar empresarial colapsable con iconografía Font Awesome unificada.
  */
 const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) => {
     const ubicacion = useLocation();
@@ -53,28 +34,28 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
         {
             etiqueta: 'Dashboard Ejecutivo',
             ruta: '/dashboard',
-            icono: LayoutDashboard,
+            icono: 'fa-solid fa-chart-pie',
             activo: ubicacion.pathname === '/dashboard',
             badge: null,
         },
         {
             etiqueta: 'Catálogo Gastronómico',
             ruta: '/catalogo',
-            icono: BookOpen,
+            icono: 'fa-solid fa-book-open',
             activo: ubicacion.pathname === '/catalogo' && !favoritasActiva && !categoriaActiva,
             badge: totalRecetas,
         },
         {
             etiqueta: 'Colección Favoritas',
             ruta: '/catalogo?favoritas=true',
-            icono: Star,
+            icono: 'fa-solid fa-star',
             activo: ubicacion.pathname === '/catalogo' && favoritasActiva,
             badge: totalFavoritas,
         },
         {
             etiqueta: 'Product Overview',
             ruta: '/',
-            icono: Sparkles,
+            icono: 'fa-solid fa-wand-magic-sparkles',
             activo: ubicacion.pathname === '/',
             badge: null,
         },
@@ -93,9 +74,8 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                     borderRight: '1px solid var(--borde-sutil)',
                 }}
             >
-                {/* Parte superior: Brand + Navegación */}
                 <div className="flex flex-col gap-6 p-3.5 overflow-y-auto">
-                    {/* Cabecera del Workspace */}
+                    {/* Brand */}
                     <div className="flex items-center justify-between px-1.5 pt-1">
                         <Link
                             to="/dashboard"
@@ -110,7 +90,7 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                                     boxShadow: 'var(--sombra-glow)',
                                 }}
                             >
-                                <ChefHat className="w-5 h-5 text-white" strokeWidth={2} />
+                                <i className="fa-solid fa-kitchen-set text-white text-sm" aria-hidden="true" />
                             </div>
                             {mostrarTexto && (
                                 <div className="flex flex-col min-w-0">
@@ -143,12 +123,12 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                                 style={{ color: 'var(--texto-secundario)', background: 'var(--bg-card)' }}
                                 aria-label="Cerrar menú lateral"
                             >
-                                <X className="w-4 h-4" />
+                                <i className="fa-solid fa-xmark text-sm" aria-hidden="true" />
                             </button>
                         )}
                     </div>
 
-                    {/* Grupo 1: Plataforma Principal */}
+                    {/* Plataforma */}
                     <div className="flex flex-col gap-1">
                         {mostrarTexto && (
                             <span
@@ -158,45 +138,42 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                                 Plataforma
                             </span>
                         )}
-                        {itemsPrincipales.map((item) => {
-                            const Icono = item.icono;
-                            return (
-                                <Link
-                                    key={item.etiqueta}
-                                    to={item.ruta}
-                                    onClick={() => esMovil && alCerrarMovil?.()}
-                                    title={!mostrarTexto ? item.etiqueta : undefined}
-                                    className={`flex items-center ${mostrarTexto ? 'justify-between px-3' : 'justify-center px-2'} py-2.5 rounded-xl text-xs font-medium transition-all duration-150`}
-                                    style={{
-                                        textDecoration: 'none',
-                                        background: item.activo ? 'var(--color-primario-suave)' : 'transparent',
-                                        color: item.activo ? 'var(--color-primario)' : 'var(--texto-secundario)',
-                                        fontWeight: item.activo ? 600 : 500,
-                                        border: item.activo ? '1px solid rgba(234, 88, 12, 0.22)' : '1px solid transparent',
-                                    }}
-                                >
-                                    <div className="flex items-center gap-3 min-w-0">
-                                        <Icono className="w-4 h-4 shrink-0" strokeWidth={item.activo ? 2.2 : 1.8} />
-                                        {mostrarTexto && <span className="truncate">{item.etiqueta}</span>}
-                                    </div>
-                                    {mostrarTexto && item.badge !== null && (
-                                        <span
-                                            className="px-2 py-0.5 rounded-md text-[11px] font-mono-num font-semibold"
-                                            style={{
-                                                background: item.activo ? 'var(--color-primario)' : 'var(--bg-card)',
-                                                color: item.activo ? '#FFFFFF' : 'var(--texto-secundario)',
-                                                border: item.activo ? 'none' : '1px solid var(--borde-sutil)',
-                                            }}
-                                        >
-                                            {item.badge}
-                                        </span>
-                                    )}
-                                </Link>
-                            );
-                        })}
+                        {itemsPrincipales.map((item) => (
+                            <Link
+                                key={item.etiqueta}
+                                to={item.ruta}
+                                onClick={() => esMovil && alCerrarMovil?.()}
+                                title={!mostrarTexto ? item.etiqueta : undefined}
+                                className={`flex items-center ${mostrarTexto ? 'justify-between px-3' : 'justify-center px-2'} py-2.5 rounded-xl text-xs font-medium transition-all duration-150`}
+                                style={{
+                                    textDecoration: 'none',
+                                    background: item.activo ? 'var(--color-primario-suave)' : 'transparent',
+                                    color: item.activo ? 'var(--color-primario)' : 'var(--texto-secundario)',
+                                    fontWeight: item.activo ? 600 : 500,
+                                    border: item.activo ? '1px solid rgba(234, 88, 12, 0.22)' : '1px solid transparent',
+                                }}
+                            >
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <i className={`${item.icono} w-4 text-center text-sm shrink-0`} aria-hidden="true" />
+                                    {mostrarTexto && <span className="truncate">{item.etiqueta}</span>}
+                                </div>
+                                {mostrarTexto && item.badge !== null && (
+                                    <span
+                                        className="px-2 py-0.5 rounded-md text-[11px] font-mono-num font-semibold"
+                                        style={{
+                                            background: item.activo ? 'var(--color-primario)' : 'var(--bg-card)',
+                                            color: item.activo ? '#FFFFFF' : 'var(--texto-secundario)',
+                                            border: item.activo ? 'none' : '1px solid var(--borde-sutil)',
+                                        }}
+                                    >
+                                        {item.badge}
+                                    </span>
+                                )}
+                            </Link>
+                        ))}
                     </div>
 
-                    {/* Grupo 2: Partidas y Categorías */}
+                    {/* Partidas Culinarias */}
                     <div className="flex flex-col gap-1">
                         {mostrarTexto && (
                             <span
@@ -207,7 +184,7 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                             </span>
                         )}
                         {categoriasMenu.map((cat) => {
-                            const IconoCat = ICONOS_CAT[cat] || Layers;
+                            const claseIcono = ICONOS_CAT[cat] || 'fa-solid fa-layer-group';
                             const activo = ubicacion.pathname === '/catalogo' && categoriaActiva === cat;
                             const cantidad = conteoPorCategoria[cat] || 0;
 
@@ -227,7 +204,7 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                                     }}
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <IconoCat className="w-4 h-4 shrink-0" strokeWidth={1.8} />
+                                        <i className={`${claseIcono} w-4 text-center text-sm shrink-0`} aria-hidden="true" />
                                         {mostrarTexto && <span className="truncate">{cat}</span>}
                                     </div>
                                     {mostrarTexto && (
@@ -241,7 +218,7 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                     </div>
                 </div>
 
-                {/* Parte inferior: Estado de telemetría + Colapsar */}
+                {/* Estado + Colapsar */}
                 <div className="p-3 border-t flex flex-col gap-2" style={{ borderColor: 'var(--borde-sutil)' }}>
                     {mostrarTexto && (
                         <div
@@ -257,7 +234,7 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                                     Sincronización en tiempo real
                                 </p>
                             </div>
-                            <Activity className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-exito)' }} />
+                            <i className="fa-solid fa-wave-square text-xs shrink-0" style={{ color: 'var(--color-exito)' }} aria-hidden="true" />
                         </div>
                     )}
 
@@ -274,10 +251,10 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                             aria-label={colapsada ? 'Expandir barra lateral' : 'Colapsar barra lateral'}
                         >
                             {colapsada ? (
-                                <ChevronRight className="w-4 h-4" />
+                                <i className="fa-solid fa-chevron-right text-xs" aria-hidden="true" />
                             ) : (
                                 <>
-                                    <ChevronLeft className="w-4 h-4" />
+                                    <i className="fa-solid fa-chevron-left text-xs" aria-hidden="true" />
                                     <span>Contraer panel</span>
                                 </>
                             )}
@@ -290,7 +267,6 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
 
     return (
         <>
-            {/* Sidebar Desktop Fija / Colapsable */}
             <aside
                 className="hidden lg:block shrink-0 transition-all duration-200 ease-out sticky top-0 h-screen z-30"
                 style={{ width: colapsada ? '74px' : '256px' }}
@@ -298,7 +274,6 @@ const Sidebar = ({ colapsada, alAlternarColapso, movilAbierta, alCerrarMovil }) 
                 {renderContenidoSidebar(false)}
             </aside>
 
-            {/* Drawer Móvil / Tablet */}
             {movilAbierta && (
                 <div
                     className="fixed inset-0 z-50 lg:hidden flex"

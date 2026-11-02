@@ -1,13 +1,3 @@
-import {
-    Search,
-    Filter,
-    Star,
-    RotateCcw,
-    ArrowUpDown,
-    Clock,
-    Layers,
-} from 'lucide-react';
-
 const CATEGORIAS = [
     'Entrada',
     'Plato Fuerte',
@@ -22,8 +12,7 @@ const CATEGORIAS = [
 const DIFICULTADES = ['Fácil', 'Media', 'Alta'];
 
 /**
- * Barra de filtros empresariales para el catálogo de GastroHub.
- * Con íconos unificados (Lucide), estados activos y accesibilidad completa.
+ * Barra de filtros empresariales con iconografía Font Awesome unificada.
  */
 const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
     const hayFiltrosActivos =
@@ -42,14 +31,13 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
             style={{ background: 'var(--bg-card)', borderColor: 'var(--borde-sutil)' }}
         >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3.5 items-end">
-                {/* Buscador con ícono */}
                 <div className="sm:col-span-2">
                     <label
                         htmlFor="filtro-busqueda"
                         className="flex items-center gap-1.5 text-xs font-semibold mb-1.5"
                         style={{ color: 'var(--texto-secundario)' }}
                     >
-                        <Search className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-magnifying-glass text-[11px]" aria-hidden="true" />
                         <span>Búsqueda por plato o insumo</span>
                     </label>
                     <input
@@ -62,14 +50,13 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                     />
                 </div>
 
-                {/* Categoría */}
                 <div>
                     <label
                         htmlFor="filtro-categoria"
                         className="flex items-center gap-1.5 text-xs font-semibold mb-1.5"
                         style={{ color: 'var(--texto-secundario)' }}
                     >
-                        <Filter className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-filter text-[11px]" aria-hidden="true" />
                         <span>Partida / Categoría</span>
                     </label>
                     <select
@@ -85,14 +72,13 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                     </select>
                 </div>
 
-                {/* Dificultad */}
                 <div>
                     <label
                         htmlFor="filtro-dificultad"
                         className="flex items-center gap-1.5 text-xs font-semibold mb-1.5"
                         style={{ color: 'var(--texto-secundario)' }}
                     >
-                        <Layers className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-layer-group text-[11px]" aria-hidden="true" />
                         <span>Complejidad</span>
                     </label>
                     <select
@@ -108,14 +94,13 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                     </select>
                 </div>
 
-                {/* Tiempo */}
                 <div>
                     <label
                         htmlFor="filtro-tiempo"
                         className="flex items-center gap-1.5 text-xs font-semibold mb-1.5"
                         style={{ color: 'var(--texto-secundario)' }}
                     >
-                        <Clock className="w-3.5 h-3.5" />
+                        <i className="fa-regular fa-clock text-[11px]" aria-hidden="true" />
                         <span>Tiempo estimado</span>
                     </label>
                     <input
@@ -128,14 +113,13 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                     />
                 </div>
 
-                {/* Ordenamiento */}
                 <div>
                     <label
                         htmlFor="filtro-orden"
                         className="flex items-center gap-1.5 text-xs font-semibold mb-1.5"
                         style={{ color: 'var(--texto-secundario)' }}
                     >
-                        <ArrowUpDown className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-arrow-up-wide-short text-[11px]" aria-hidden="true" />
                         <span>Ordenar por</span>
                     </label>
                     <select
@@ -155,7 +139,6 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                 </div>
             </div>
 
-            {/* Barra inferior de filtros rápidos */}
             <div
                 className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3.5 border-t"
                 style={{ borderColor: 'var(--borde-sutil)' }}
@@ -171,7 +154,10 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                             borderColor: filtros.soloFavoritas ? 'rgba(245, 158, 11, 0.35)' : 'var(--borde-sutil)',
                         }}
                     >
-                        <Star className={`w-3.5 h-3.5 ${filtros.soloFavoritas ? 'fill-amber-400 text-amber-400' : ''}`} />
+                        <i
+                            className={`${filtros.soloFavoritas ? 'fa-solid text-amber-400' : 'fa-regular'} fa-star text-xs`}
+                            aria-hidden="true"
+                        />
                         <span>Solo Favoritas del Chef</span>
                     </button>
 
@@ -211,7 +197,7 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                             border: '1px solid rgba(239, 68, 68, 0.25)',
                         }}
                     >
-                        <RotateCcw className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-rotate-left text-xs" aria-hidden="true" />
                         <span>Restablecer filtros</span>
                     </button>
                 )}

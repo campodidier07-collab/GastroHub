@@ -1,23 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import {
-    BookOpen,
-    Star,
-    Flame,
-    Layers,
-    Plus,
-    Download,
-    ArrowUpRight,
-    Clock,
-    Users,
-    ChefHat,
-    Sparkles,
-    CheckCircle2,
-    BarChart3,
-    PieChart,
-    Eye,
-} from 'lucide-react';
 import { useRecetas } from '../../context/RecetaContext';
 import Modal from '../../components/ui/Modal';
 import DetalleReceta from '../../components/recetas/DetalleReceta';
@@ -25,8 +8,7 @@ import FormularioReceta from '../../components/recetas/FormularioReceta';
 import Spinner from '../../components/ui/Spinner';
 
 /**
- * Dashboard Ejecutivo SaaS de GastroHub.
- * Incluye tarjetas KPI, gráficas analíticas interactivas, actividad reciente y accesos rápidos.
+ * Dashboard Ejecutivo SaaS de GastroHub con iconografía Font Awesome.
  */
 const DashboardView = () => {
     const navegar = useNavigate();
@@ -49,7 +31,6 @@ const DashboardView = () => {
         }
     }, [listaRecetas.length, cargarRecetas]);
 
-    // ── Analítica en tiempo real del catálogo ──────────────────────────────
     const analitica = useMemo(() => {
         const total = listaRecetas.length;
         const favoritas = listaRecetas.filter((r) => r.favorito).length;
@@ -66,7 +47,6 @@ const DashboardView = () => {
         );
         const promedioIngredientes = total > 0 ? (totalIngredientes / total).toFixed(1) : '0';
 
-        // Distribución por categoría
         const mapaCategorias = {};
         listaRecetas.forEach((r) => {
             const cat = r.categoria || 'Plato Fuerte';
@@ -81,7 +61,6 @@ const DashboardView = () => {
             }))
             .sort((a, b) => b.cantidad - a.cantidad);
 
-        // Distribución por dificultad
         const conteoDificultad = { 'Fácil': 0, 'Media': 0, 'Alta': 0 };
         listaRecetas.forEach((r) => {
             const dif = r.dificultad || 'Media';
@@ -154,7 +133,7 @@ const DashboardView = () => {
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto flex flex-col gap-6">
-            {/* ── Cabecera Ejecutiva ───────────────────────────────────────── */}
+            {/* Cabecera Ejecutiva */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -162,8 +141,8 @@ const DashboardView = () => {
                             className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1.5"
                             style={{ background: 'var(--color-primario-suave)', color: 'var(--color-primario)' }}
                         >
-                            <Sparkles className="w-3 h-3" />
-                            Centro de Control Gastronómico
+                            <i className="fa-solid fa-wand-magic-sparkles text-[10px]" aria-hidden="true" />
+                            <span>Centro de Control Gastronómico</span>
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: 'var(--texto-primario)' }}>
@@ -180,7 +159,7 @@ const DashboardView = () => {
                         onClick={exportarCatalogoJson}
                         className="btn-secundario"
                     >
-                        <Download className="w-4 h-4" />
+                        <i className="fa-solid fa-download text-xs" aria-hidden="true" />
                         <span>Exportar JSON</span>
                     </button>
                     <button
@@ -191,15 +170,14 @@ const DashboardView = () => {
                         }}
                         className="btn-primario"
                     >
-                        <Plus className="w-4 h-4" />
+                        <i className="fa-solid fa-plus text-xs" aria-hidden="true" />
                         <span>Nueva Ficha Técnica</span>
                     </button>
                 </div>
             </div>
 
-            {/* ── Fila 1: 4 Tarjetas KPI Empresariales ─────────────────────── */}
+            {/* 4 Tarjetas KPI */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* KPI 1 */}
                 <div className="tarjeta p-5 flex flex-col justify-between gap-3">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>
@@ -209,21 +187,20 @@ const DashboardView = () => {
                             className="w-9 h-9 rounded-xl flex items-center justify-center"
                             style={{ background: 'var(--color-primario-suave)', color: 'var(--color-primario)' }}
                         >
-                            <BookOpen className="w-4 h-4" />
+                            <i className="fa-solid fa-book-open text-sm" aria-hidden="true" />
                         </div>
                     </div>
                     <div>
                         <p className="text-3xl font-extrabold font-mono-num" style={{ color: 'var(--texto-primario)' }}>
                             {analitica.total}
                         </p>
-                        <p className="text-[11px] mt-1 flex items-center gap-1" style={{ color: 'var(--color-exito-texto)' }}>
-                            <CheckCircle2 className="w-3.5 h-3.5" />
+                        <p className="text-[11px] mt-1 flex items-center gap-1.5" style={{ color: 'var(--color-exito-texto)' }}>
+                            <i className="fa-solid fa-circle-check text-xs" aria-hidden="true" />
                             <span>{analitica.distribucionCategorias.length} partidas gastronómicas</span>
                         </p>
                     </div>
                 </div>
 
-                {/* KPI 2 */}
                 <div className="tarjeta p-5 flex flex-col justify-between gap-3">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>
@@ -233,7 +210,7 @@ const DashboardView = () => {
                             className="w-9 h-9 rounded-xl flex items-center justify-center"
                             style={{ background: 'var(--color-advertencia-bg)', color: 'var(--color-advertencia)' }}
                         >
-                            <Star className="w-4 h-4" />
+                            <i className="fa-solid fa-star text-sm" aria-hidden="true" />
                         </div>
                     </div>
                     <div>
@@ -254,7 +231,6 @@ const DashboardView = () => {
                     </div>
                 </div>
 
-                {/* KPI 3 */}
                 <div className="tarjeta p-5 flex flex-col justify-between gap-3">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>
@@ -264,7 +240,7 @@ const DashboardView = () => {
                             className="w-9 h-9 rounded-xl flex items-center justify-center"
                             style={{ background: 'var(--color-info-bg)', color: 'var(--color-info)' }}
                         >
-                            <Flame className="w-4 h-4" />
+                            <i className="fa-solid fa-fire-flame-curved text-sm" aria-hidden="true" />
                         </div>
                     </div>
                     <div>
@@ -284,7 +260,6 @@ const DashboardView = () => {
                     </div>
                 </div>
 
-                {/* KPI 4 */}
                 <div className="tarjeta p-5 flex flex-col justify-between gap-3">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>
@@ -294,7 +269,7 @@ const DashboardView = () => {
                             className="w-9 h-9 rounded-xl flex items-center justify-center"
                             style={{ background: 'var(--color-exito-bg)', color: 'var(--color-exito)' }}
                         >
-                            <Layers className="w-4 h-4" />
+                            <i className="fa-solid fa-layer-group text-sm" aria-hidden="true" />
                         </div>
                     </div>
                     <div>
@@ -308,13 +283,12 @@ const DashboardView = () => {
                 </div>
             </div>
 
-            {/* ── Fila 2: Gráficas Analíticas (Categorías & Dificultad) ─────── */}
+            {/* Gráficas Analíticas */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Gráfica 1: Distribución por Categoría */}
                 <div className="tarjeta p-6 lg:col-span-2 flex flex-col justify-between gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                            <BarChart3 className="w-4 h-4" style={{ color: 'var(--color-primario)' }} />
+                            <i className="fa-solid fa-chart-column text-sm" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
                             <div>
                                 <h2 className="text-sm font-bold" style={{ color: 'var(--texto-primario)' }}>
                                     Distribución por Partida Gastronómica
@@ -326,10 +300,11 @@ const DashboardView = () => {
                         </div>
                         <Link
                             to="/catalogo"
-                            className="text-xs font-semibold flex items-center gap-1"
+                            className="text-xs font-semibold flex items-center gap-1.5"
                             style={{ color: 'var(--color-primario)', textDecoration: 'none' }}
                         >
-                            Ver catálogo <ArrowUpRight className="w-3.5 h-3.5" />
+                            <span>Ver catálogo</span>
+                            <i className="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true" />
                         </Link>
                     </div>
 
@@ -363,10 +338,10 @@ const DashboardView = () => {
                     </div>
                 </div>
 
-                {/* Gráfica 2: Matriz de Complejidad Operativa */}
+                {/* Matriz de Dificultad */}
                 <div className="tarjeta p-6 flex flex-col justify-between gap-4">
                     <div className="flex items-center gap-2.5">
-                        <PieChart className="w-4 h-4" style={{ color: 'var(--color-secundario)' }} />
+                        <i className="fa-solid fa-chart-pie text-sm" style={{ color: 'var(--color-secundario)' }} aria-hidden="true" />
                         <div>
                             <h2 className="text-sm font-bold" style={{ color: 'var(--texto-primario)' }}>
                                 Nivel de Complejidad Técnica
@@ -379,9 +354,9 @@ const DashboardView = () => {
 
                     <div className="flex flex-col gap-3 my-auto">
                         {[
-                            { nivel: 'Fácil', color: 'var(--color-exito)', bg: 'var(--color-exito-bg)', desc: 'Ejecución rápida (< 30 min)' },
-                            { nivel: 'Media', color: 'var(--color-advertencia)', bg: 'var(--color-advertencia-bg)', desc: 'Técnica intermedia controlada' },
-                            { nivel: 'Alta', color: 'var(--color-error)', bg: 'var(--color-error-bg)', desc: 'Alta cocina / cocción precisa' },
+                            { nivel: 'Fácil', color: 'var(--color-exito)', desc: 'Ejecución rápida (< 30 min)' },
+                            { nivel: 'Media', color: 'var(--color-advertencia)', desc: 'Técnica intermedia controlada' },
+                            { nivel: 'Alta', color: 'var(--color-error)', desc: 'Alta cocina / cocción precisa' },
                         ].map((item) => {
                             const cant = analitica.conteoDificultad[item.nivel] || 0;
                             const pct = analitica.total > 0 ? Math.round((cant / analitica.total) * 100) : 0;
@@ -423,9 +398,8 @@ const DashboardView = () => {
                 </div>
             </div>
 
-            {/* ── Fila 3: Fichas Recientes + Accesos Rápidos ───────────────── */}
+            {/* Fichas Recientes + Acciones Rápidas */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Actividad reciente */}
                 <div className="tarjeta p-6 lg:col-span-2 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div>
@@ -464,7 +438,7 @@ const DashboardView = () => {
                                                 loading="lazy"
                                             />
                                         ) : (
-                                            <ChefHat className="w-5 h-5" style={{ color: 'var(--color-primario)' }} />
+                                            <i className="fa-solid fa-utensils text-sm" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
                                         )}
                                     </div>
                                     <div className="min-w-0">
@@ -477,11 +451,11 @@ const DashboardView = () => {
                                             </span>
                                             <span>•</span>
                                             <span className="inline-flex items-center gap-1">
-                                                <Clock className="w-3 h-3" /> {receta.tiempo}
+                                                <i className="fa-regular fa-clock text-[10px]" aria-hidden="true" /> {receta.tiempo}
                                             </span>
                                             <span>•</span>
                                             <span className="inline-flex items-center gap-1">
-                                                <Users className="w-3 h-3" /> {receta.porciones || 4} porc.
+                                                <i className="fa-solid fa-user-group text-[10px]" aria-hidden="true" /> {receta.porciones || 4} porc.
                                             </span>
                                         </div>
                                     </div>
@@ -498,9 +472,10 @@ const DashboardView = () => {
                                         }}
                                         aria-label="Alternar favorito"
                                     >
-                                        <Star
-                                            className={`w-4 h-4 ${receta.favorito ? 'fill-amber-400 text-amber-400' : ''}`}
+                                        <i
+                                            className={`${receta.favorito ? 'fa-solid text-amber-400' : 'fa-regular'} fa-star text-xs`}
                                             style={{ color: receta.favorito ? '#F59E0B' : 'var(--texto-muted)' }}
+                                            aria-hidden="true"
                                         />
                                     </button>
                                     <button
@@ -508,7 +483,7 @@ const DashboardView = () => {
                                         onClick={() => setRecetaDetalle(receta)}
                                         className="btn-ver"
                                     >
-                                        <Eye className="w-3.5 h-3.5" />
+                                        <i className="fa-regular fa-eye text-xs" aria-hidden="true" />
                                         <span>Ficha</span>
                                     </button>
                                 </div>
@@ -517,7 +492,7 @@ const DashboardView = () => {
                     </div>
                 </div>
 
-                {/* Accesos Rápidos Operativos */}
+                {/* Acciones Rápidas */}
                 <div className="tarjeta p-6 flex flex-col justify-between gap-4">
                     <div>
                         <h2 className="text-sm font-bold" style={{ color: 'var(--texto-primario)' }}>
@@ -540,7 +515,7 @@ const DashboardView = () => {
                                     className="w-8 h-8 rounded-lg flex items-center justify-center"
                                     style={{ background: 'var(--color-primario-suave)', color: 'var(--color-primario)' }}
                                 >
-                                    <Plus className="w-4 h-4" />
+                                    <i className="fa-solid fa-plus text-xs" aria-hidden="true" />
                                 </div>
                                 <div>
                                     <p className="text-xs font-bold" style={{ color: 'var(--texto-primario)' }}>
@@ -551,7 +526,7 @@ const DashboardView = () => {
                                     </p>
                                 </div>
                             </div>
-                            <ArrowUpRight className="w-4 h-4" style={{ color: 'var(--texto-muted)' }} />
+                            <i className="fa-solid fa-arrow-up-right-from-square text-xs" style={{ color: 'var(--texto-muted)' }} aria-hidden="true" />
                         </button>
 
                         <Link
@@ -568,7 +543,7 @@ const DashboardView = () => {
                                     className="w-8 h-8 rounded-lg flex items-center justify-center"
                                     style={{ background: 'var(--color-advertencia-bg)', color: 'var(--color-advertencia)' }}
                                 >
-                                    <Star className="w-4 h-4" />
+                                    <i className="fa-solid fa-star text-xs" aria-hidden="true" />
                                 </div>
                                 <div>
                                     <p className="text-xs font-bold" style={{ color: 'var(--texto-primario)' }}>
@@ -579,7 +554,7 @@ const DashboardView = () => {
                                     </p>
                                 </div>
                             </div>
-                            <ArrowUpRight className="w-4 h-4" style={{ color: 'var(--texto-muted)' }} />
+                            <i className="fa-solid fa-arrow-up-right-from-square text-xs" style={{ color: 'var(--texto-muted)' }} aria-hidden="true" />
                         </Link>
 
                         <button
@@ -593,7 +568,7 @@ const DashboardView = () => {
                                     className="w-8 h-8 rounded-lg flex items-center justify-center"
                                     style={{ background: 'var(--color-info-bg)', color: 'var(--color-info)' }}
                                 >
-                                    <Download className="w-4 h-4" />
+                                    <i className="fa-solid fa-download text-xs" aria-hidden="true" />
                                 </div>
                                 <div>
                                     <p className="text-xs font-bold" style={{ color: 'var(--texto-primario)' }}>
@@ -604,13 +579,12 @@ const DashboardView = () => {
                                     </p>
                                 </div>
                             </div>
-                            <ArrowUpRight className="w-4 h-4" style={{ color: 'var(--texto-muted)' }} />
+                            <i className="fa-solid fa-arrow-up-right-from-square text-xs" style={{ color: 'var(--texto-muted)' }} aria-hidden="true" />
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Modal — Ver Ficha Técnica */}
             <Modal
                 abierto={Boolean(recetaDetalle)}
                 alCerrar={() => setRecetaDetalle(null)}
@@ -624,7 +598,6 @@ const DashboardView = () => {
                 />
             </Modal>
 
-            {/* Modal — Crear Ficha Técnica */}
             <Modal
                 abierto={modalCrear}
                 alCerrar={() => setModalCrear(false)}

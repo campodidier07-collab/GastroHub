@@ -1,56 +1,39 @@
 import { Link } from 'react-router-dom';
-import {
-    Sparkles,
-    ArrowRight,
-    LayoutDashboard,
-    BookOpen,
-    Scale,
-    CheckCircle2,
-    Printer,
-    ShieldCheck,
-    Utensils,
-    Flame,
-    Salad,
-    Soup,
-    Wine,
-    IceCreamBowl,
-} from 'lucide-react';
 
 /**
- * Vista de presentación SaaS de GastroHub (Product Overview).
- * Inspirada en Linear, Stripe y Vercel con Bento Grid y adaptación Dark/Light.
+ * Vista de presentación SaaS de GastroHub con iconografía Font Awesome unificada.
  */
 const InicioView = () => {
     const categoriasDestacadas = [
-        { nombre: 'Plato Fuerte', icono: Utensils, desc: 'Proteínas, risottos y cocciones principales' },
-        { nombre: 'Entrada', icono: Flame, desc: 'Ceviches, tartares y aperitivos de autor' },
-        { nombre: 'Postre', icono: IceCreamBowl, desc: 'Alta pastelería, chocolate y reducciones' },
-        { nombre: 'Ensalada', icono: Salad, desc: 'Bowls frescos, granos y vinagretas' },
-        { nombre: 'Sopa', icono: Soup, desc: 'Ramen artesanal, fondos y cremas' },
-        { nombre: 'Bebida', icono: Wine, desc: 'Infusiones, fermentos y coctelería' },
+        { nombre: 'Plato Fuerte', icono: 'fa-solid fa-utensils', desc: 'Proteínas, risottos y cocciones principales' },
+        { nombre: 'Entrada', icono: 'fa-solid fa-fire-flame-curved', desc: 'Ceviches, tartares y aperitivos de autor' },
+        { nombre: 'Postre', icono: 'fa-solid fa-ice-cream', desc: 'Alta pastelería, chocolate y reducciones' },
+        { nombre: 'Ensalada', icono: 'fa-solid fa-leaf', desc: 'Bowls frescos, granos y vinagretas' },
+        { nombre: 'Sopa', icono: 'fa-solid fa-bowl-food', desc: 'Ramen artesanal, fondos y cremas' },
+        { nombre: 'Bebida', icono: 'fa-solid fa-martini-glass-citrus', desc: 'Infusiones, fermentos y coctelería' },
     ];
 
     const capacidadesSaaS = [
         {
-            icono: Scale,
+            icono: 'fa-solid fa-scale-balanced',
             titulo: 'Escalador Matemático de Porciones',
             descripcion: 'Modifica el rendimiento de 1 a 50 comensales y recalcula cada gramo o mililitro de la mise en place en tiempo real.',
             etiqueta: 'Precisión Operativa',
         },
         {
-            icono: CheckCircle2,
+            icono: 'fa-solid fa-list-check',
             titulo: 'Modo Cocina Paso a Paso',
             descripcion: 'Checklist interactivo para marcar insumos alistados y etapas de cocción con indicador porcentual de avance.',
             etiqueta: 'Flujo en Línea',
         },
         {
-            icono: Printer,
+            icono: 'fa-solid fa-print',
             titulo: 'Fichas Técnicas Imprimibles',
             descripcion: 'Generación instantánea de hojas de producción limpias listas para estación de cocina o exportación a PDF.',
             etiqueta: 'Estándar HoReCa',
         },
         {
-            icono: ShieldCheck,
+            icono: 'fa-solid fa-shield-halved',
             titulo: 'API REST con Validación Estricta',
             descripcion: 'Arquitectura Express 5 + Mongoose 9 con sanitización de esquemas, telemetría de salud y respaldo automático.',
             etiqueta: 'Grado Empresarial',
@@ -59,7 +42,7 @@ const InicioView = () => {
 
     return (
         <div className="flex flex-col">
-            {/* ─── HERO EMPRESARIAL ─────────────────────────────────────────── */}
+            {/* HERO EMPRESARIAL */}
             <section
                 className="relative overflow-hidden border-b py-14 sm:py-20 px-4 sm:px-6 lg:px-8"
                 style={{
@@ -69,14 +52,15 @@ const InicioView = () => {
             >
                 <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
                     <div className="lg:col-span-7 flex flex-col gap-5">
-                        <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full text-xs font-semibold border"
+                        <div
+                            className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full text-xs font-semibold border"
                             style={{
                                 background: 'var(--color-primario-suave)',
                                 color: 'var(--color-primario)',
                                 borderColor: 'rgba(234, 88, 12, 0.28)',
                             }}
                         >
-                            <Sparkles className="w-3.5 h-3.5" />
+                            <i className="fa-solid fa-wand-magic-sparkles text-xs" aria-hidden="true" />
                             <span>GastroHub Enterprise v2.0 · Culinary SaaS</span>
                         </div>
 
@@ -102,7 +86,7 @@ const InicioView = () => {
                                 className="btn-primario px-5 py-2.5 text-sm"
                                 style={{ textDecoration: 'none' }}
                             >
-                                <LayoutDashboard className="w-4 h-4" />
+                                <i className="fa-solid fa-chart-pie text-xs" aria-hidden="true" />
                                 <span>Abrir Dashboard Ejecutivo</span>
                             </Link>
                             <Link
@@ -110,7 +94,7 @@ const InicioView = () => {
                                 className="btn-secundario px-5 py-2.5 text-sm"
                                 style={{ textDecoration: 'none' }}
                             >
-                                <BookOpen className="w-4 h-4" />
+                                <i className="fa-solid fa-book-open text-xs" aria-hidden="true" />
                                 <span>Explorar Catálogo</span>
                             </Link>
                         </div>
@@ -134,7 +118,6 @@ const InicioView = () => {
                         </div>
                     </div>
 
-                    {/* Tarjeta visual de previsualización */}
                     <div className="lg:col-span-5">
                         <div
                             className="tarjeta p-3 rounded-2xl border"
@@ -164,7 +147,7 @@ const InicioView = () => {
                                     style={{ textDecoration: 'none' }}
                                 >
                                     <span>Ver fichas</span>
-                                    <ArrowRight className="w-3.5 h-3.5" />
+                                    <i className="fa-solid fa-arrow-right text-[10px]" aria-hidden="true" />
                                 </Link>
                             </div>
                         </div>
@@ -172,7 +155,7 @@ const InicioView = () => {
                 </div>
             </section>
 
-            {/* ─── BENTO GRID DE CAPACIDADES SAAS ───────────────────────────── */}
+            {/* BENTO GRID */}
             <section className="py-14 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
                     <div>
@@ -185,46 +168,43 @@ const InicioView = () => {
                     </div>
                     <Link
                         to="/dashboard"
-                        className="text-xs font-semibold inline-flex items-center gap-1"
+                        className="text-xs font-semibold inline-flex items-center gap-1.5"
                         style={{ color: 'var(--color-primario)', textDecoration: 'none' }}
                     >
                         <span>Ir al panel de analítica</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-arrow-right text-[10px]" aria-hidden="true" />
                     </Link>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {capacidadesSaaS.map((cap) => {
-                        const Icono = cap.icono;
-                        return (
-                            <div key={cap.titulo} className="tarjeta tarjeta-interactiva p-6 flex flex-col gap-3">
-                                <div className="flex items-center justify-between">
-                                    <div
-                                        className="w-10 h-10 rounded-xl flex items-center justify-center"
-                                        style={{ background: 'var(--color-primario-suave)', color: 'var(--color-primario)' }}
-                                    >
-                                        <Icono className="w-5 h-5" />
-                                    </div>
-                                    <span
-                                        className="px-2.5 py-0.5 rounded-md text-[11px] font-semibold"
-                                        style={{ background: 'var(--bg-secundario)', color: 'var(--texto-secundario)' }}
-                                    >
-                                        {cap.etiqueta}
-                                    </span>
+                    {capacidadesSaaS.map((cap) => (
+                        <div key={cap.titulo} className="tarjeta tarjeta-interactiva p-6 flex flex-col gap-3">
+                            <div className="flex items-center justify-between">
+                                <div
+                                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                                    style={{ background: 'var(--color-primario-suave)', color: 'var(--color-primario)' }}
+                                >
+                                    <i className={`${cap.icono} text-base`} aria-hidden="true" />
                                 </div>
-                                <h3 className="text-base font-bold" style={{ color: 'var(--texto-primario)' }}>
-                                    {cap.titulo}
-                                </h3>
-                                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: 'var(--texto-secundario)' }}>
-                                    {cap.descripcion}
-                                </p>
+                                <span
+                                    className="px-2.5 py-0.5 rounded-md text-[11px] font-semibold"
+                                    style={{ background: 'var(--bg-secundario)', color: 'var(--texto-secundario)' }}
+                                >
+                                    {cap.etiqueta}
+                                </span>
                             </div>
-                        );
-                    })}
+                            <h3 className="text-base font-bold" style={{ color: 'var(--texto-primario)' }}>
+                                {cap.titulo}
+                            </h3>
+                            <p className="text-xs sm:text-sm leading-relaxed" style={{ color: 'var(--texto-secundario)' }}>
+                                {cap.descripcion}
+                            </p>
+                        </div>
+                    ))}
                 </div>
             </section>
 
-            {/* ─── PARTIDAS CULINARIAS ──────────────────────────────────────── */}
+            {/* PARTIDAS CULINARIAS */}
             <section className="py-12 px-4 sm:px-6 lg:px-8 border-t" style={{ borderColor: 'var(--borde-sutil)' }}>
                 <div className="max-w-6xl mx-auto">
                     <div className="mb-6">
@@ -237,32 +217,29 @@ const InicioView = () => {
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
-                        {categoriasDestacadas.map((cat) => {
-                            const Icono = cat.icono;
-                            return (
-                                <Link
-                                    key={cat.nombre}
-                                    to={`/catalogo?categoria=${encodeURIComponent(cat.nombre)}`}
-                                    className="tarjeta tarjeta-interactiva p-4 flex flex-col gap-2.5"
-                                    style={{ textDecoration: 'none' }}
+                        {categoriasDestacadas.map((cat) => (
+                            <Link
+                                key={cat.nombre}
+                                to={`/catalogo?categoria=${encodeURIComponent(cat.nombre)}`}
+                                className="tarjeta tarjeta-interactiva p-4 flex flex-col gap-2.5"
+                                style={{ textDecoration: 'none' }}
+                            >
+                                <div
+                                    className="w-9 h-9 rounded-xl flex items-center justify-center"
+                                    style={{ background: 'var(--bg-secundario)', color: 'var(--color-primario)' }}
                                 >
-                                    <div
-                                        className="w-9 h-9 rounded-xl flex items-center justify-center"
-                                        style={{ background: 'var(--bg-secundario)', color: 'var(--color-primario)' }}
-                                    >
-                                        <Icono className="w-4 h-4" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-bold" style={{ color: 'var(--texto-primario)' }}>
-                                            {cat.nombre}
-                                        </p>
-                                        <p className="text-[11px] leading-snug mt-0.5" style={{ color: 'var(--texto-muted)' }}>
-                                            {cat.desc}
-                                        </p>
-                                    </div>
-                                </Link>
-                            );
-                        })}
+                                    <i className={`${cat.icono} text-sm`} aria-hidden="true" />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold" style={{ color: 'var(--texto-primario)' }}>
+                                        {cat.nombre}
+                                    </p>
+                                    <p className="text-[11px] leading-snug mt-0.5" style={{ color: 'var(--texto-muted)' }}>
+                                        {cat.desc}
+                                    </p>
+                                </div>
+                            </Link>
+                        ))}
                     </div>
                 </div>
             </section>

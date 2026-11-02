@@ -1,8 +1,7 @@
-import { AlertTriangle, Trash2 } from 'lucide-react';
 import Modal from './Modal';
 
 /**
- * Modal de confirmación para acciones destructivas con jerarquía visual clara.
+ * Modal de confirmación para acciones destructivas con Font Awesome.
  */
 const ConfirmacionModal = ({
     abierto,
@@ -23,7 +22,7 @@ const ConfirmacionModal = ({
                         border: '1px solid rgba(239, 68, 68, 0.25)',
                     }}
                 >
-                    <AlertTriangle className="w-6 h-6" strokeWidth={2} />
+                    <i className="fa-solid fa-triangle-exclamation text-lg" aria-hidden="true" />
                 </div>
 
                 <p className="text-sm leading-relaxed" style={{ color: 'var(--texto-secundario)' }}>
@@ -41,8 +40,8 @@ const ConfirmacionModal = ({
                         onClick={alConfirmar}
                         disabled={cargando}
                     >
-                        <Trash2 className="w-4 h-4" strokeWidth={2} />
-                        {cargando ? 'Eliminando...' : 'Confirmar eliminación'}
+                        <i className="fa-solid fa-trash-can text-xs" aria-hidden="true" />
+                        <span>{cargando ? 'Eliminando...' : 'Confirmar eliminación'}</span>
                     </button>
                 </div>
             </div>

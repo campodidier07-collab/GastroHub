@@ -1,28 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import {
-    Search,
-    Sun,
-    Moon,
-    Bell,
-    Plus,
-    Menu,
-    ChevronRight,
-    Sparkles,
-    Clock,
-    Star,
-    CheckCircle2,
-    User,
-    LayoutDashboard,
-    BookOpen,
-} from 'lucide-react';
 import { useRecetas } from '../../context/RecetaContext';
 import { useTheme } from '../../context/ThemeContext';
 
 /**
- * Navbar superior premium estilo Stripe / Vercel / Linear.
- * Incluye Breadcrumb contextual, Buscador instantáneo con Popover,
- * Switch de Tema Claro/Oscuro, Centro de Notificaciones y Perfil Ejecutivo.
+ * Navbar superior premium con iconografía Font Awesome unificada.
  */
 const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
     const [busquedaRapida, setBusquedaRapida] = useState('');
@@ -39,7 +21,6 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
     const refNotif = useRef(null);
     const refPerfil = useRef(null);
 
-    // Cerrar popovers al hacer clic fuera
     useEffect(() => {
         const manejarClickFuera = (e) => {
             if (refBusqueda.current && !refBusqueda.current.contains(e.target)) {
@@ -56,7 +37,6 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
         return () => document.removeEventListener('mousedown', manejarClickFuera);
     }, []);
 
-    // Atajo de teclado Ctrl+K / Cmd+K para enfocar el buscador global
     const inputBusquedaRef = useRef(null);
     useEffect(() => {
         const manejarAtajo = (e) => {
@@ -105,7 +85,7 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                 borderColor: 'var(--borde-sutil)',
             }}
         >
-            {/* Izquierda: Botón menú móvil + Breadcrumb contextual */}
+            {/* Izquierda: Menú móvil + Breadcrumb */}
             <div className="flex items-center gap-3 min-w-0">
                 <button
                     type="button"
@@ -118,10 +98,10 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                     }}
                     aria-label="Abrir navegación"
                 >
-                    <Menu className="w-4 h-4" />
+                    <i className="fa-solid fa-bars text-sm" aria-hidden="true" />
                 </button>
 
-                <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs min-w-0">
+                <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs min-w-0">
                     <Link
                         to="/dashboard"
                         className="font-semibold hidden sm:inline hover:underline"
@@ -129,19 +109,24 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                     >
                         GastroHub
                     </Link>
-                    <ChevronRight className="w-3.5 h-3.5 hidden sm:inline shrink-0" style={{ color: 'var(--texto-muted)' }} />
+                    <i
+                        className="fa-solid fa-chevron-right text-[10px] hidden sm:inline shrink-0"
+                        style={{ color: 'var(--texto-muted)' }}
+                        aria-hidden="true"
+                    />
                     <span className="font-bold truncate" style={{ color: 'var(--texto-primario)' }}>
                         {nombreVistaActual}
                     </span>
                 </nav>
             </div>
 
-            {/* Centro: Command Search Bar (⌘K) */}
+            {/* Centro: Command Search Bar (Ctrl+K) */}
             <div ref={refBusqueda} className="relative flex-1 max-w-md">
                 <form onSubmit={manejarSubmitBusqueda} className="relative flex items-center">
-                    <Search
-                        className="w-4 h-4 absolute left-3 pointer-events-none"
+                    <i
+                        className="fa-solid fa-magnifying-glass text-xs absolute left-3.5 pointer-events-none"
                         style={{ color: 'var(--texto-muted)' }}
+                        aria-hidden="true"
                     />
                     <input
                         ref={inputBusquedaRef}
@@ -174,7 +159,6 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                     </kbd>
                 </form>
 
-                {/* Popover de resultados rápidos */}
                 {popoverBusqueda && (
                     <div
                         className="absolute left-0 right-0 mt-2 rounded-2xl border p-2 z-50 animar-entrada"
@@ -220,7 +204,7 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                                             </p>
                                         </div>
                                         {receta.favorito && (
-                                            <Star className="w-3.5 h-3.5 shrink-0 fill-amber-400 text-amber-400" />
+                                            <i className="fa-solid fa-star text-xs text-amber-400 shrink-0" aria-hidden="true" />
                                         )}
                                     </button>
                                 ))}
@@ -234,21 +218,19 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                 )}
             </div>
 
-            {/* Derecha: Acciones Globales, Tema, Notificaciones y Perfil */}
+            {/* Derecha: Nueva Ficha, Tema, Notificaciones, Perfil */}
             <div className="flex items-center gap-2 shrink-0">
-                {/* Botón de acción primaria rápida */}
                 {alAbrirCrearReceta && (
                     <button
                         type="button"
                         onClick={alAbrirCrearReceta}
                         className="btn-primario hidden sm:inline-flex py-1.5 px-3 text-xs"
                     >
-                        <Plus className="w-4 h-4" strokeWidth={2.2} />
+                        <i className="fa-solid fa-plus text-xs" aria-hidden="true" />
                         <span>Nueva Ficha</span>
                     </button>
                 )}
 
-                {/* Switcher Modo Claro / Modo Oscuro */}
                 <button
                     type="button"
                     onClick={alternarTema}
@@ -262,13 +244,12 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                     aria-label={esOscuro ? 'Activar modo claro' : 'Activar modo oscuro'}
                 >
                     {esOscuro ? (
-                        <Sun className="w-4 h-4 text-amber-400" strokeWidth={2} />
+                        <i className="fa-solid fa-sun text-sm text-amber-400" aria-hidden="true" />
                     ) : (
-                        <Moon className="w-4 h-4" strokeWidth={2} />
+                        <i className="fa-solid fa-moon text-sm" aria-hidden="true" />
                     )}
                 </button>
 
-                {/* Centro de Notificaciones */}
                 <div ref={refNotif} className="relative">
                     <button
                         type="button"
@@ -281,7 +262,7 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                         }}
                         aria-label="Abrir notificaciones"
                     >
-                        <Bell className="w-4 h-4" strokeWidth={2} />
+                        <i className="fa-regular fa-bell text-sm" aria-hidden="true" />
                         <span
                             className="w-2 h-2 rounded-full absolute top-2 right-2"
                             style={{ background: 'var(--color-primario)' }}
@@ -311,7 +292,7 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
 
                             <div className="flex flex-col gap-2 text-xs">
                                 <div className="flex items-start gap-2.5 p-2 rounded-xl" style={{ background: 'var(--bg-secundario)' }}>
-                                    <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--color-exito)' }} />
+                                    <i className="fa-solid fa-circle-check text-sm mt-0.5 shrink-0" style={{ color: 'var(--color-exito)' }} aria-hidden="true" />
                                     <div>
                                         <p className="font-semibold" style={{ color: 'var(--texto-primario)' }}>
                                             Catálogo sincronizado ({listaRecetas.length} fichas)
@@ -323,7 +304,7 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                                 </div>
 
                                 <div className="flex items-start gap-2.5 p-2 rounded-xl" style={{ background: 'var(--bg-secundario)' }}>
-                                    <Sparkles className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--color-primario)' }} />
+                                    <i className="fa-solid fa-wand-magic-sparkles text-sm mt-0.5 shrink-0" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
                                     <div>
                                         <p className="font-semibold" style={{ color: 'var(--texto-primario)' }}>
                                             Escalador de rendimiento activo
@@ -338,7 +319,7 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                     )}
                 </div>
 
-                {/* Perfil Ejecutivo */}
+                {/* Perfil */}
                 <div ref={refPerfil} className="relative">
                     <button
                         type="button"
@@ -382,20 +363,20 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                             <Link
                                 to="/dashboard"
                                 onClick={() => setPopoverPerfil(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium"
+                                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium"
                                 style={{ color: 'var(--texto-primario)', textDecoration: 'none' }}
                             >
-                                <LayoutDashboard className="w-4 h-4" />
-                                Dashboard Ejecutivo
+                                <i className="fa-solid fa-chart-pie w-4 text-center" aria-hidden="true" />
+                                <span>Dashboard Ejecutivo</span>
                             </Link>
                             <Link
                                 to="/catalogo"
                                 onClick={() => setPopoverPerfil(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium"
+                                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium"
                                 style={{ color: 'var(--texto-primario)', textDecoration: 'none' }}
                             >
-                                <BookOpen className="w-4 h-4" />
-                                Gestionar Fichas Técnicas
+                                <i className="fa-solid fa-book-open w-4 text-center" aria-hidden="true" />
+                                <span>Gestionar Fichas Técnicas</span>
                             </Link>
                             <button
                                 type="button"
@@ -403,11 +384,11 @@ const Navbar = ({ alAbrirMenuMovil, alAbrirCrearReceta }) => {
                                     alternarTema();
                                     setPopoverPerfil(false);
                                 }}
-                                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-left cursor-pointer"
+                                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-left cursor-pointer"
                                 style={{ color: 'var(--texto-secundario)' }}
                             >
-                                {esOscuro ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                                {esOscuro ? 'Modo Claro' : 'Modo Oscuro'}
+                                <i className={`fa-solid ${esOscuro ? 'fa-sun' : 'fa-moon'} w-4 text-center`} aria-hidden="true" />
+                                <span>{esOscuro ? 'Modo Claro' : 'Modo Oscuro'}</span>
                             </button>
                         </div>
                     )}

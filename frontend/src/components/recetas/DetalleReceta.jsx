@@ -1,17 +1,4 @@
 import { useState } from 'react';
-import {
-    Star,
-    Printer,
-    Pencil,
-    Clock,
-    Users,
-    Flame,
-    Minus,
-    Plus,
-    RotateCcw,
-    CheckCircle2,
-    Utensils,
-} from 'lucide-react';
 
 const ESTILOS_DIFICULTAD = {
     'Fácil': { bg: 'var(--color-exito-bg)', color: 'var(--color-exito-texto)' },
@@ -20,8 +7,7 @@ const ESTILOS_DIFICULTAD = {
 };
 
 /**
- * Ficha Técnica Interactiva & Modo Cocina de GastroHub.
- * Con escalador de porciones en tiempo real, checklist interactivo e impresión limpia.
+ * Ficha Técnica Interactiva & Modo Cocina de GastroHub con Font Awesome.
  */
 const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
     const porcionesBase = receta?.porciones || 4;
@@ -65,7 +51,6 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* Banner fotográfico */}
             {receta.imagenUrl && (
                 <div className="relative h-52 w-full rounded-2xl overflow-hidden border" style={{ borderColor: 'var(--borde-sutil)' }}>
                     <img
@@ -82,16 +67,15 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                             {receta.categoria || 'Plato Fuerte'}
                         </span>
                         {receta.calorias ? (
-                            <span className="px-3 py-1 rounded-lg text-xs font-mono-num font-bold bg-black/55 backdrop-blur-md flex items-center gap-1">
-                                <Flame className="w-3.5 h-3.5 text-amber-400" />
-                                {Math.round(receta.calorias * factorEscala)} kcal totales ({receta.calorias} kcal/porc.)
+                            <span className="px-3 py-1 rounded-lg text-xs font-mono-num font-bold bg-black/55 backdrop-blur-md flex items-center gap-1.5">
+                                <i className="fa-solid fa-fire-flame-curved text-xs text-amber-400" aria-hidden="true" />
+                                <span>{Math.round(receta.calorias * factorEscala)} kcal totales ({receta.calorias} kcal/porc.)</span>
                             </span>
                         ) : null}
                     </div>
                 </div>
             )}
 
-            {/* Cabecera y botones de acción */}
             <div className="flex flex-col gap-2">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -109,7 +93,8 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                                 Complejidad {dificultad}
                             </span>
                             <span className="inline-flex items-center gap-1 text-xs font-mono-num" style={{ color: 'var(--texto-secundario)' }}>
-                                <Clock className="w-3.5 h-3.5" /> {receta.tiempo}
+                                <i className="fa-regular fa-clock text-xs" aria-hidden="true" />
+                                <span>{receta.tiempo}</span>
                             </span>
                         </div>
 
@@ -125,7 +110,10 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                                 onClick={() => alToggleFavorito(receta)}
                                 className="btn-secundario py-1.5 px-3 text-xs"
                             >
-                                <Star className={`w-3.5 h-3.5 ${receta.favorito ? 'fill-amber-400 text-amber-400' : ''}`} />
+                                <i
+                                    className={`${receta.favorito ? 'fa-solid text-amber-400' : 'fa-regular'} fa-star text-xs`}
+                                    aria-hidden="true"
+                                />
                                 <span>{receta.favorito ? 'Favorita' : 'Destacar'}</span>
                             </button>
                         )}
@@ -135,7 +123,7 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                             className="btn-secundario py-1.5 px-3 text-xs"
                             title="Imprimir ficha técnica"
                         >
-                            <Printer className="w-3.5 h-3.5" />
+                            <i className="fa-solid fa-print text-xs" aria-hidden="true" />
                             <span>Imprimir</span>
                         </button>
                         {alEditar && (
@@ -144,7 +132,7 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                                 onClick={() => alEditar(receta)}
                                 className="btn-editar"
                             >
-                                <Pencil className="w-3.5 h-3.5" />
+                                <i className="fa-solid fa-pen text-xs" aria-hidden="true" />
                                 <span>Editar</span>
                             </button>
                         )}
@@ -162,14 +150,14 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                 </p>
             </div>
 
-            {/* Calculadora de Rendimiento (Porciones) */}
+            {/* Escalador de Rendimiento */}
             <div
                 className="p-4 rounded-2xl border flex flex-wrap items-center justify-between gap-3"
                 style={{ background: 'var(--bg-secundario)', borderColor: 'var(--borde-sutil)' }}
             >
                 <div>
                     <p className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: 'var(--color-primario)' }}>
-                        <Users className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-scale-balanced text-xs" aria-hidden="true" />
                         <span>Escalador Dinámico de Rendimiento</span>
                     </p>
                     <p className="text-xs mt-0.5" style={{ color: 'var(--texto-secundario)' }}>
@@ -185,7 +173,7 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                         style={{ background: 'var(--bg-card)', borderColor: 'var(--borde-sutil)', color: 'var(--texto-primario)' }}
                         aria-label="Disminuir porciones"
                     >
-                        <Minus className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-minus text-xs" aria-hidden="true" />
                     </button>
                     <span
                         className="px-3.5 py-1 rounded-lg border text-xs font-mono-num font-bold"
@@ -200,7 +188,7 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                         style={{ background: 'var(--bg-card)', borderColor: 'var(--borde-sutil)', color: 'var(--texto-primario)' }}
                         aria-label="Aumentar porciones"
                     >
-                        <Plus className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-plus text-xs" aria-hidden="true" />
                     </button>
                     {porcionesActuales !== porcionesBase && (
                         <button
@@ -209,18 +197,18 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                             className="inline-flex items-center gap-1 text-xs font-semibold ml-1 cursor-pointer"
                             style={{ color: 'var(--color-primario)' }}
                         >
-                            <RotateCcw className="w-3 h-3" />
+                            <i className="fa-solid fa-rotate-left text-xs" aria-hidden="true" />
                             <span>Base ({porcionesBase})</span>
                         </button>
                     )}
                 </div>
             </div>
 
-            {/* Tabla interactiva de Ingredientes */}
+            {/* Ingredientes */}
             <div>
                 <div className="flex items-center justify-between mb-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: 'var(--texto-primario)' }}>
-                        <Utensils className="w-3.5 h-3.5" style={{ color: 'var(--color-primario)' }} />
+                        <i className="fa-solid fa-utensils text-xs" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
                         <span>Mise en Place ({receta.ingredientes?.length || 0} insumos)</span>
                     </h4>
                     <span className="text-[11px]" style={{ color: 'var(--texto-muted)' }}>
@@ -281,11 +269,11 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                 )}
             </div>
 
-            {/* Pasos interactivos con barra de progreso */}
+            {/* Pasos */}
             <div>
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
                     <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: 'var(--texto-primario)' }}>
-                        <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--color-exito)' }} />
+                        <i className="fa-solid fa-circle-check text-xs" style={{ color: 'var(--color-exito)' }} aria-hidden="true" />
                         <span>Protocolo Paso a Paso ({cantidadPasosListos}/{totalPasos})</span>
                     </h4>
                     <span className="text-xs font-mono-num font-bold" style={{ color: 'var(--color-exito-texto)' }}>
@@ -323,7 +311,7 @@ const DetalleReceta = ({ receta, alToggleFavorito, alEditar }) => {
                                             color: completado ? '#FFFFFF' : 'var(--color-primario)',
                                         }}
                                     >
-                                        {completado ? '✓' : idx + 1}
+                                        {completado ? <i className="fa-solid fa-check text-[10px]" aria-hidden="true" /> : idx + 1}
                                     </span>
                                     <p
                                         className="text-xs sm:text-sm leading-relaxed flex-1"

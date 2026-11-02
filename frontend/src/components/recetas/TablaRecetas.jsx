@@ -1,16 +1,3 @@
-import {
-    Star,
-    Clock,
-    Users,
-    Flame,
-    Eye,
-    Pencil,
-    Trash2,
-    ChefHat,
-    ArrowUpDown,
-    SearchX,
-} from 'lucide-react';
-
 const ESTILOS_DIFICULTAD = {
     'Fácil': {
         bg: 'var(--color-exito-bg)',
@@ -30,9 +17,8 @@ const ESTILOS_DIFICULTAD = {
 };
 
 /**
- * Componente de visualización del catálogo con soporte dual:
- * - Vista de Cuadrícula de Tarjetas ('grid')
- * - Vista de Tabla Ejecutiva con cabeceras ordenables ('tabla')
+ * Componente de visualización del catálogo con soporte dual (Tarjetas y Tabla)
+ * utilizando Font Awesome en toda la iconografía.
  */
 const TablaRecetas = ({
     recetas,
@@ -60,7 +46,7 @@ const TablaRecetas = ({
                     className="w-12 h-12 rounded-2xl flex items-center justify-center"
                     style={{ background: 'var(--bg-secundario)', color: 'var(--texto-muted)' }}
                 >
-                    <SearchX className="w-6 h-6" strokeWidth={1.8} />
+                    <i className="fa-solid fa-magnifying-glass-minus text-lg" aria-hidden="true" />
                 </div>
                 <div>
                     <p className="font-bold text-sm" style={{ color: 'var(--texto-primario)' }}>
@@ -89,7 +75,6 @@ const TablaRecetas = ({
                             className="tarjeta tarjeta-interactiva overflow-hidden flex flex-col justify-between group"
                         >
                             <div>
-                                {/* Imagen de cabecera con overlay sutil */}
                                 <div
                                     className="relative h-44 w-full overflow-hidden flex items-center justify-center"
                                     style={{ background: 'var(--bg-secundario)' }}
@@ -102,7 +87,11 @@ const TablaRecetas = ({
                                             loading="lazy"
                                         />
                                     ) : (
-                                        <ChefHat className="w-10 h-10" style={{ color: 'var(--color-primario)' }} />
+                                        <i
+                                            className="fa-solid fa-utensils text-3xl"
+                                            style={{ color: 'var(--color-primario)' }}
+                                            aria-hidden="true"
+                                        />
                                     )}
 
                                     <span
@@ -126,14 +115,14 @@ const TablaRecetas = ({
                                             borderColor: 'var(--borde-sutil)',
                                         }}
                                     >
-                                        <Star
-                                            className={`w-4 h-4 ${receta.favorito ? 'fill-amber-400 text-amber-400' : ''}`}
+                                        <i
+                                            className={`${receta.favorito ? 'fa-solid text-amber-400' : 'fa-regular'} fa-star text-xs`}
                                             style={{ color: receta.favorito ? '#F59E0B' : 'var(--texto-muted)' }}
+                                            aria-hidden="true"
                                         />
                                     </button>
                                 </div>
 
-                                {/* Cuerpo */}
                                 <div className="p-5 flex flex-col gap-3">
                                     <div className="flex items-start justify-between gap-2.5">
                                         <h3
@@ -163,33 +152,32 @@ const TablaRecetas = ({
 
                                     <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] font-medium" style={{ color: 'var(--texto-secundario)' }}>
                                         <span
-                                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md"
+                                            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md"
                                             style={{ background: 'var(--bg-secundario)' }}
                                         >
-                                            <Clock className="w-3 h-3" style={{ color: 'var(--color-primario)' }} />
-                                            {receta.tiempo}
+                                            <i className="fa-regular fa-clock text-[10px]" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
+                                            <span>{receta.tiempo}</span>
                                         </span>
                                         <span
-                                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono-num"
+                                            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md font-mono-num"
                                             style={{ background: 'var(--bg-secundario)' }}
                                         >
-                                            <Users className="w-3 h-3" />
-                                            {receta.porciones || 4} porc.
+                                            <i className="fa-solid fa-user-group text-[10px]" aria-hidden="true" />
+                                            <span>{receta.porciones || 4} porc.</span>
                                         </span>
                                         {receta.calorias ? (
                                             <span
-                                                className="inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono-num"
+                                                className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md font-mono-num"
                                                 style={{ background: 'var(--bg-secundario)' }}
                                             >
-                                                <Flame className="w-3 h-3 text-amber-500" />
-                                                {receta.calorias} kcal
+                                                <i className="fa-solid fa-fire-flame-curved text-[10px] text-amber-500" aria-hidden="true" />
+                                                <span>{receta.calorias} kcal</span>
                                             </span>
                                         ) : null}
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Pie de acciones */}
                             <div
                                 className="px-5 py-3 border-t flex items-center justify-between gap-2"
                                 style={{ borderColor: 'var(--borde-sutil)', background: 'var(--bg-secundario)' }}
@@ -199,14 +187,14 @@ const TablaRecetas = ({
                                 </span>
                                 <div className="flex items-center gap-1.5">
                                     <button type="button" className="btn-ver" onClick={() => alVerDetalle(receta)} title="Abrir ficha técnica">
-                                        <Eye className="w-3.5 h-3.5" />
+                                        <i className="fa-regular fa-eye text-xs" aria-hidden="true" />
                                         <span>Ficha</span>
                                     </button>
-                                    <button type="button" className="btn-editar" onClick={() => alEditar(receta)} title="Editar receta">
-                                        <Pencil className="w-3.5 h-3.5" />
+                                    <button type="button" className="btn-editar" onClick={() => alEditar(receta)} title="Editar receta" aria-label="Editar receta">
+                                        <i className="fa-solid fa-pen text-xs" aria-hidden="true" />
                                     </button>
-                                    <button type="button" className="btn-peligro" onClick={() => alEliminar(receta)} title="Eliminar receta">
-                                        <Trash2 className="w-3.5 h-3.5" />
+                                    <button type="button" className="btn-peligro" onClick={() => alEliminar(receta)} title="Eliminar receta" aria-label="Eliminar receta">
+                                        <i className="fa-solid fa-trash-can text-xs" aria-hidden="true" />
                                     </button>
                                 </div>
                             </div>
@@ -230,16 +218,16 @@ const TablaRecetas = ({
                     <thead>
                         <tr style={{ background: 'var(--bg-secundario)', borderBottom: '1px solid var(--borde-sutil)' }}>
                             <th className="w-10 px-3 py-3 text-center font-semibold text-[11px] uppercase tracking-wider" style={{ color: 'var(--texto-muted)' }}>
-                                ★
+                                <i className="fa-solid fa-star text-[10px]" aria-hidden="true" />
                             </th>
                             <th className="text-left px-4 py-3 font-semibold text-[11px] uppercase tracking-wider" style={{ color: 'var(--texto-muted)' }}>
                                 <button
                                     type="button"
                                     onClick={() => alternarOrdenColumna('titulo_az', 'titulo_za')}
-                                    className="inline-flex items-center gap-1 cursor-pointer hover:underline"
+                                    className="inline-flex items-center gap-1.5 cursor-pointer hover:underline"
                                 >
                                     <span>Ficha Técnica</span>
-                                    <ArrowUpDown className="w-3 h-3" />
+                                    <i className="fa-solid fa-sort text-[10px]" aria-hidden="true" />
                                 </button>
                             </th>
                             <th className="text-left px-4 py-3 font-semibold text-[11px] uppercase tracking-wider" style={{ color: 'var(--texto-muted)' }}>
@@ -255,20 +243,20 @@ const TablaRecetas = ({
                                 <button
                                     type="button"
                                     onClick={() => alternarOrdenColumna('mas_ingredientes', 'menos_ingredientes')}
-                                    className="inline-flex items-center gap-1 cursor-pointer hover:underline"
+                                    className="inline-flex items-center gap-1.5 cursor-pointer hover:underline"
                                 >
                                     <span>Estructura</span>
-                                    <ArrowUpDown className="w-3 h-3" />
+                                    <i className="fa-solid fa-sort text-[10px]" aria-hidden="true" />
                                 </button>
                             </th>
                             <th className="text-left px-4 py-3 font-semibold text-[11px] uppercase tracking-wider" style={{ color: 'var(--texto-muted)' }}>
                                 <button
                                     type="button"
                                     onClick={() => alternarOrdenColumna('reciente', 'antiguo')}
-                                    className="inline-flex items-center gap-1 cursor-pointer hover:underline"
+                                    className="inline-flex items-center gap-1.5 cursor-pointer hover:underline"
                                 >
                                     <span>Registro</span>
-                                    <ArrowUpDown className="w-3 h-3" />
+                                    <i className="fa-solid fa-sort text-[10px]" aria-hidden="true" />
                                 </button>
                             </th>
                             <th className="text-right px-5 py-3 font-semibold text-[11px] uppercase tracking-wider" style={{ color: 'var(--texto-muted)' }}>
@@ -297,9 +285,10 @@ const TablaRecetas = ({
                                             className="cursor-pointer p-1"
                                             aria-label="Alternar favorito"
                                         >
-                                            <Star
-                                                className={`w-4 h-4 ${receta.favorito ? 'fill-amber-400 text-amber-400' : ''}`}
+                                            <i
+                                                className={`${receta.favorito ? 'fa-solid text-amber-400' : 'fa-regular'} fa-star text-xs`}
                                                 style={{ color: receta.favorito ? '#F59E0B' : 'var(--texto-muted)' }}
+                                                aria-hidden="true"
                                             />
                                         </button>
                                     </td>
@@ -356,14 +345,14 @@ const TablaRecetas = ({
                                     <td className="px-5 py-3.5">
                                         <div className="flex items-center gap-1.5 justify-end">
                                             <button type="button" className="btn-ver" onClick={() => alVerDetalle(receta)}>
-                                                <Eye className="w-3.5 h-3.5" />
+                                                <i className="fa-regular fa-eye text-xs" aria-hidden="true" />
                                                 <span>Ficha</span>
                                             </button>
-                                            <button type="button" className="btn-editar" onClick={() => alEditar(receta)}>
-                                                <Pencil className="w-3.5 h-3.5" />
+                                            <button type="button" className="btn-editar" onClick={() => alEditar(receta)} aria-label="Editar receta">
+                                                <i className="fa-solid fa-pen text-xs" aria-hidden="true" />
                                             </button>
-                                            <button type="button" className="btn-peligro" onClick={() => alEliminar(receta)}>
-                                                <Trash2 className="w-3.5 h-3.5" />
+                                            <button type="button" className="btn-peligro" onClick={() => alEliminar(receta)} aria-label="Eliminar receta">
+                                                <i className="fa-solid fa-trash-can text-xs" aria-hidden="true" />
                                             </button>
                                         </div>
                                     </td>

@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
-import { X } from 'lucide-react';
 
 /**
- * Modal empresarial accesible (WCAG AA).
- * Soporta cierre con tecla Escape, bloqueo de scroll y superficies adaptativas Dark/Light.
+ * Modal empresarial accesible (WCAG AA) con iconografía Font Awesome.
  */
 const Modal = ({ abierto, alCerrar, titulo, subtitulo, children, tamano = 'md' }) => {
     useEffect(() => {
@@ -52,7 +50,6 @@ const Modal = ({ abierto, alCerrar, titulo, subtitulo, children, tamano = 'md' }
                 }}
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Encabezado fijo */}
                 <div
                     className="flex items-center justify-between px-6 py-4 border-b shrink-0"
                     style={{ borderColor: 'var(--borde-sutil)', background: 'var(--bg-secundario)' }}
@@ -74,11 +71,10 @@ const Modal = ({ abierto, alCerrar, titulo, subtitulo, children, tamano = 'md' }
                         style={{ color: 'var(--texto-secundario)', background: 'var(--bg-card)', border: '1px solid var(--borde-sutil)' }}
                         aria-label="Cerrar ventana modal"
                     >
-                        <X className="w-4 h-4" strokeWidth={2} />
+                        <i className="fa-solid fa-xmark text-sm" aria-hidden="true" />
                     </button>
                 </div>
 
-                {/* Cuerpo desplazable */}
                 <div className="px-6 py-5 overflow-y-auto">
                     {children}
                 </div>

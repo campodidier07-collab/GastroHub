@@ -1,18 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import {
-    LayoutGrid,
-    Table2,
-    Plus,
-    BookOpen,
-    Star,
-    Layers,
-    Flame,
-    ChevronLeft,
-    ChevronRight,
-    AlertCircle,
-} from 'lucide-react';
 import { useRecetas } from '../../context/RecetaContext';
 import FiltrosRecetas from '../../components/recetas/FiltrosRecetas';
 import TablaRecetas from '../../components/recetas/TablaRecetas';
@@ -35,8 +23,7 @@ const FILTROS_INICIALES = {
 const REGISTROS_POR_PAGINA = 6;
 
 /**
- * Vista empresarial del Catálogo Gastronómico de GastroHub.
- * Con sincronización de query params, KPIs, selector de vista y tabla ordenable.
+ * Vista empresarial del Catálogo Gastronómico de GastroHub con Font Awesome.
  */
 const CatalogoView = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -74,7 +61,6 @@ const CatalogoView = () => {
         cargarRecetas();
     }, [cargarRecetas]);
 
-    // Sincronizar cambios desde la Sidebar o buscador global (URL query params)
     useEffect(() => {
         const catUrl = searchParams.get('categoria') || '';
         const difUrl = searchParams.get('dificultad') || '';
@@ -96,13 +82,13 @@ const CatalogoView = () => {
 
     const actualizarFiltros = (nuevosFiltros) => {
         setFiltros((prev) => {
-            const Combinado = { ...prev, ...nuevosFiltros };
+            const combinado = { ...prev, ...nuevosFiltros };
             const params = {};
-            if (Combinado.categoria) params.categoria = Combinado.categoria;
-            if (Combinado.dificultad) params.dificultad = Combinado.dificultad;
-            if (Combinado.soloFavoritas) params.favoritas = 'true';
+            if (combinado.categoria) params.categoria = combinado.categoria;
+            if (combinado.dificultad) params.dificultad = combinado.dificultad;
+            if (combinado.soloFavoritas) params.favoritas = 'true';
             setSearchParams(params, { replace: true });
-            return Combinado;
+            return combinado;
         });
     };
 
@@ -266,7 +252,7 @@ const CatalogoView = () => {
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-            {/* Encabezado y Controles */}
+            {/* Encabezado */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: 'var(--texto-primario)' }}>
@@ -279,7 +265,6 @@ const CatalogoView = () => {
                 </div>
 
                 <div className="flex items-center gap-2.5 self-start sm:self-auto">
-                    {/* Selector segmentado Tarjetas / Tabla */}
                     <div
                         className="inline-flex rounded-xl p-1 border"
                         style={{ background: 'var(--bg-secundario)', borderColor: 'var(--borde-sutil)' }}
@@ -296,7 +281,7 @@ const CatalogoView = () => {
                                 boxShadow: modoVista === 'grid' ? 'var(--sombra-sm)' : 'none',
                             }}
                         >
-                            <LayoutGrid className="w-3.5 h-3.5" />
+                            <i className="fa-solid fa-grip text-xs" aria-hidden="true" />
                             <span>Tarjetas</span>
                         </button>
                         <button
@@ -309,7 +294,7 @@ const CatalogoView = () => {
                                 boxShadow: modoVista === 'tabla' ? 'var(--sombra-sm)' : 'none',
                             }}
                         >
-                            <Table2 className="w-3.5 h-3.5" />
+                            <i className="fa-solid fa-table-list text-xs" aria-hidden="true" />
                             <span>Tabla</span>
                         </button>
                     </div>
@@ -322,20 +307,20 @@ const CatalogoView = () => {
                             setModalCrear(true);
                         }}
                     >
-                        <Plus className="w-4 h-4" />
+                        <i className="fa-solid fa-plus text-xs" aria-hidden="true" />
                         <span>Nueva Ficha</span>
                     </button>
                 </div>
             </div>
 
-            {/* Resumen KPI Compacto */}
+            {/* KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="tarjeta p-4 flex items-center gap-3.5">
                     <div
                         className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                         style={{ background: 'var(--color-primario-suave)', color: 'var(--color-primario)' }}
                     >
-                        <BookOpen className="w-4 h-4" />
+                        <i className="fa-solid fa-book-open text-sm" aria-hidden="true" />
                     </div>
                     <div>
                         <p className="text-[11px] font-semibold" style={{ color: 'var(--texto-muted)' }}>Total Fichas</p>
@@ -348,7 +333,7 @@ const CatalogoView = () => {
                         className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                         style={{ background: 'var(--color-advertencia-bg)', color: 'var(--color-advertencia)' }}
                     >
-                        <Star className="w-4 h-4" />
+                        <i className="fa-solid fa-star text-sm" aria-hidden="true" />
                     </div>
                     <div>
                         <p className="text-[11px] font-semibold" style={{ color: 'var(--texto-muted)' }}>Favoritas del Chef</p>
@@ -361,7 +346,7 @@ const CatalogoView = () => {
                         className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                         style={{ background: 'var(--color-exito-bg)', color: 'var(--color-exito)' }}
                     >
-                        <Layers className="w-4 h-4" />
+                        <i className="fa-solid fa-layer-group text-sm" aria-hidden="true" />
                     </div>
                     <div>
                         <p className="text-[11px] font-semibold" style={{ color: 'var(--texto-muted)' }}>Partidas Activas</p>
@@ -374,7 +359,7 @@ const CatalogoView = () => {
                         className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                         style={{ background: 'var(--color-info-bg)', color: 'var(--color-info)' }}
                     >
-                        <Flame className="w-4 h-4" />
+                        <i className="fa-solid fa-fire-flame-curved text-sm" aria-hidden="true" />
                     </div>
                     <div>
                         <p className="text-[11px] font-semibold" style={{ color: 'var(--texto-muted)' }}>Media Energética</p>
@@ -385,14 +370,12 @@ const CatalogoView = () => {
                 </div>
             </div>
 
-            {/* Filtros */}
             <FiltrosRecetas
                 filtros={filtros}
                 alCambiarFiltros={actualizarFiltros}
                 alLimpiar={limpiarFiltros}
             />
 
-            {/* Estado de carga / Error / Tabla */}
             {cargando ? (
                 <Spinner mensaje="Sincronizando catálogo gastronómico..." />
             ) : errorGlobal ? (
@@ -401,7 +384,7 @@ const CatalogoView = () => {
                     className="tarjeta p-8 text-center flex flex-col items-center gap-3"
                     style={{ background: 'var(--color-error-bg)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
                 >
-                    <AlertCircle className="w-8 h-8" style={{ color: 'var(--color-error)' }} />
+                    <i className="fa-solid fa-circle-exclamation text-2xl" style={{ color: 'var(--color-error)' }} aria-hidden="true" />
                     <p className="font-bold text-sm" style={{ color: 'var(--color-error-texto)' }}>{errorGlobal}</p>
                     <button type="button" className="btn-primario mt-1" onClick={cargarRecetas}>
                         Reintentar sincronización
@@ -423,7 +406,6 @@ const CatalogoView = () => {
                         alToggleFavorito={manejarToggleFavorito}
                     />
 
-                    {/* Paginación */}
                     {totalPaginas > 1 && (
                         <div className="flex items-center justify-between mt-6">
                             <p className="text-xs font-mono-num" style={{ color: 'var(--texto-secundario)' }}>
@@ -434,14 +416,14 @@ const CatalogoView = () => {
                                     type="button"
                                     onClick={() => setPaginaActual((p) => Math.max(p - 1, 1))}
                                     disabled={paginaActual === 1}
-                                    className="px-3 py-1.5 text-xs rounded-xl border font-semibold inline-flex items-center gap-1 disabled:opacity-40 cursor-pointer"
+                                    className="px-3 py-1.5 text-xs rounded-xl border font-semibold inline-flex items-center gap-1.5 disabled:opacity-40 cursor-pointer"
                                     style={{
                                         borderColor: 'var(--borde-sutil)',
                                         color: 'var(--texto-secundario)',
                                         background: 'var(--bg-card)',
                                     }}
                                 >
-                                    <ChevronLeft className="w-3.5 h-3.5" />
+                                    <i className="fa-solid fa-chevron-left text-[10px]" aria-hidden="true" />
                                     <span>Anterior</span>
                                 </button>
 
@@ -465,7 +447,7 @@ const CatalogoView = () => {
                                     type="button"
                                     onClick={() => setPaginaActual((p) => Math.min(p + 1, totalPaginas))}
                                     disabled={paginaActual === totalPaginas}
-                                    className="px-3 py-1.5 text-xs rounded-xl border font-semibold inline-flex items-center gap-1 disabled:opacity-40 cursor-pointer"
+                                    className="px-3 py-1.5 text-xs rounded-xl border font-semibold inline-flex items-center gap-1.5 disabled:opacity-40 cursor-pointer"
                                     style={{
                                         borderColor: 'var(--borde-sutil)',
                                         color: 'var(--texto-secundario)',
@@ -473,7 +455,7 @@ const CatalogoView = () => {
                                     }}
                                 >
                                     <span>Siguiente</span>
-                                    <ChevronRight className="w-3.5 h-3.5" />
+                                    <i className="fa-solid fa-chevron-right text-[10px]" aria-hidden="true" />
                                 </button>
                             </div>
                         </div>
@@ -481,7 +463,6 @@ const CatalogoView = () => {
                 </>
             )}
 
-            {/* Modal — Crear */}
             <Modal
                 abierto={modalCrear}
                 alCerrar={() => setModalCrear(false)}
@@ -497,7 +478,6 @@ const CatalogoView = () => {
                 />
             </Modal>
 
-            {/* Modal — Editar */}
             <Modal
                 abierto={modalEditar.abierto}
                 alCerrar={() => setModalEditar({ abierto: false, receta: null })}
@@ -514,7 +494,6 @@ const CatalogoView = () => {
                 />
             </Modal>
 
-            {/* Modal — Ver detalle */}
             <Modal
                 abierto={modalDetalle.abierto}
                 alCerrar={() => setModalDetalle({ abierto: false, receta: null })}
@@ -533,7 +512,6 @@ const CatalogoView = () => {
                 />
             </Modal>
 
-            {/* Modal — Confirmación de eliminación */}
             <ConfirmacionModal
                 abierto={modalEliminar.abierto}
                 alCerrar={() => setModalEliminar({ abierto: false, receta: null })}

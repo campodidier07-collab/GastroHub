@@ -1,19 +1,4 @@
 import { useState } from 'react';
-import {
-    Utensils,
-    Clock,
-    Users,
-    Flame,
-    Image,
-    Star,
-    Plus,
-    Trash2,
-    CheckCircle2,
-    AlertCircle,
-    Layers,
-    FileText,
-    ListOrdered,
-} from 'lucide-react';
 
 const CATEGORIAS = [
     'Entrada',
@@ -69,7 +54,7 @@ const FilaIngrediente = ({ ingrediente, indice, onCambio, onEliminar, puedeElimi
             title="Eliminar insumo"
             aria-label={`Eliminar ingrediente ${indice + 1}`}
         >
-            <Trash2 className="w-4 h-4" />
+            <i className="fa-solid fa-trash-can text-xs" aria-hidden="true" />
         </button>
     </div>
 );
@@ -107,7 +92,7 @@ const FilaPaso = ({ paso, indice, onCambio, onEliminar, puedeEliminar }) => (
             title="Eliminar paso"
             aria-label={`Eliminar paso ${indice + 1}`}
         >
-            <Trash2 className="w-4 h-4" />
+            <i className="fa-solid fa-trash-can text-xs" aria-hidden="true" />
         </button>
     </div>
 );
@@ -135,8 +120,7 @@ const sanitizarIngrediente = (ing) => ({
 });
 
 /**
- * Formulario de nivel empresarial con validaciones reactivas,
- * ayuda contextual, estados Focus/Error/Success e íconos Lucide.
+ * Formulario de nivel empresarial con iconografía Font Awesome unificada.
  */
 const FormularioReceta = ({
     recetaInicial = null,
@@ -280,12 +264,12 @@ const FormularioReceta = ({
                         borderColor: 'rgba(239, 68, 68, 0.3)',
                     }}
                 >
-                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <i className="fa-solid fa-circle-exclamation text-sm shrink-0" aria-hidden="true" />
                     <span>{errorExterno}</span>
                 </div>
             )}
 
-            {/* Sección 1: Identidad del Plato */}
+            {/* Identidad del Plato */}
             <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
                 <div className="flex-1 w-full">
                     <label
@@ -294,12 +278,12 @@ const FormularioReceta = ({
                         style={{ color: 'var(--texto-primario)' }}
                     >
                         <span className="flex items-center gap-1.5">
-                            <Utensils className="w-3.5 h-3.5" style={{ color: 'var(--color-primario)' }} />
-                            Nombre del Plato *
+                            <i className="fa-solid fa-utensils text-xs" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
+                            <span>Nombre del Plato *</span>
                         </span>
                         {formulario.titulo.trim().length > 3 && !errores.titulo && (
                             <span className="inline-flex items-center gap-1 text-[11px]" style={{ color: 'var(--color-exito-texto)' }}>
-                                <CheckCircle2 className="w-3 h-3" /> Válido
+                                <i className="fa-solid fa-circle-check text-[10px]" aria-hidden="true" /> Válido
                             </span>
                         )}
                     </label>
@@ -313,7 +297,7 @@ const FormularioReceta = ({
                     />
                     {errores.titulo && (
                         <p className="text-[11px] mt-1 flex items-center gap-1" style={{ color: 'var(--color-error-texto)' }}>
-                            <AlertCircle className="w-3 h-3" /> {errores.titulo}
+                            <i className="fa-solid fa-circle-exclamation text-[10px]" aria-hidden="true" /> {errores.titulo}
                         </p>
                     )}
                 </div>
@@ -328,7 +312,10 @@ const FormularioReceta = ({
                         borderColor: formulario.favorito ? 'rgba(245, 158, 11, 0.35)' : 'var(--borde-sutil)',
                     }}
                 >
-                    <Star className={`w-4 h-4 ${formulario.favorito ? 'fill-amber-400 text-amber-400' : ''}`} />
+                    <i
+                        className={`${formulario.favorito ? 'fa-solid text-amber-400' : 'fa-regular'} fa-star text-xs`}
+                        aria-hidden="true"
+                    />
                     <span>Plato Favorito</span>
                 </button>
             </div>
@@ -340,7 +327,7 @@ const FormularioReceta = ({
                     className="flex items-center gap-1.5 text-xs font-semibold mb-1.5"
                     style={{ color: 'var(--texto-primario)' }}
                 >
-                    <FileText className="w-3.5 h-3.5" style={{ color: 'var(--texto-muted)' }} />
+                    <i className="fa-regular fa-file-lines text-xs" style={{ color: 'var(--texto-muted)' }} aria-hidden="true" />
                     <span>Resumen Sensorial y Notas de Emplatado</span>
                 </label>
                 <textarea
@@ -353,14 +340,14 @@ const FormularioReceta = ({
                 />
             </div>
 
-            {/* Sección 2: Parámetros Técnicos */}
+            {/* Parámetros Técnicos */}
             <div
                 className="p-4 rounded-xl border grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3"
                 style={{ background: 'var(--bg-secundario)', borderColor: 'var(--borde-sutil)' }}
             >
                 <div>
-                    <label className="flex items-center gap-1 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
-                        <Layers className="w-3.5 h-3.5" />
+                    <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
+                        <i className="fa-solid fa-layer-group text-[11px]" aria-hidden="true" />
                         <span>Partida</span>
                     </label>
                     <select
@@ -375,7 +362,8 @@ const FormularioReceta = ({
                 </div>
 
                 <div>
-                    <label className="flex items-center gap-1 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
+                    <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
+                        <i className="fa-solid fa-gauge-high text-[11px]" aria-hidden="true" />
                         <span>Complejidad</span>
                     </label>
                     <select
@@ -390,8 +378,8 @@ const FormularioReceta = ({
                 </div>
 
                 <div>
-                    <label className="flex items-center gap-1 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
-                        <Clock className="w-3.5 h-3.5" />
+                    <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
+                        <i className="fa-regular fa-clock text-[11px]" aria-hidden="true" />
                         <span>Tiempo *</span>
                     </label>
                     <input
@@ -407,8 +395,8 @@ const FormularioReceta = ({
                 </div>
 
                 <div>
-                    <label className="flex items-center gap-1 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
-                        <Users className="w-3.5 h-3.5" />
+                    <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
+                        <i className="fa-solid fa-user-group text-[11px]" aria-hidden="true" />
                         <span>Porciones base</span>
                     </label>
                     <input
@@ -421,8 +409,8 @@ const FormularioReceta = ({
                 </div>
 
                 <div>
-                    <label className="flex items-center gap-1 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
-                        <Flame className="w-3.5 h-3.5" />
+                    <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-secundario)' }}>
+                        <i className="fa-solid fa-fire-flame-curved text-[11px]" aria-hidden="true" />
                         <span>Energía (kcal)</span>
                     </label>
                     <input
@@ -439,7 +427,7 @@ const FormularioReceta = ({
             {/* Imagen URL */}
             <div>
                 <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: 'var(--texto-primario)' }}>
-                    <Image className="w-3.5 h-3.5" style={{ color: 'var(--texto-muted)' }} />
+                    <i className="fa-regular fa-image text-xs" style={{ color: 'var(--texto-muted)' }} aria-hidden="true" />
                     <span>URL de Fotografía de Referencia (opcional)</span>
                 </label>
                 <input
@@ -451,7 +439,7 @@ const FormularioReceta = ({
                 />
             </div>
 
-            {/* Sección 3: Ingredientes */}
+            {/* Ingredientes */}
             <div>
                 <div className="flex items-center justify-between mb-2">
                     <div>
@@ -467,7 +455,7 @@ const FormularioReceta = ({
                         onClick={agregarIngrediente}
                         className="btn-ver"
                     >
-                        <Plus className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-plus text-[10px]" aria-hidden="true" />
                         <span>Añadir insumo</span>
                     </button>
                 </div>
@@ -492,16 +480,16 @@ const FormularioReceta = ({
                 </div>
                 {errores.ingredientes && (
                     <p className="text-[11px] mt-1.5 flex items-center gap-1" style={{ color: 'var(--color-error-texto)' }}>
-                        <AlertCircle className="w-3.5 h-3.5" /> {errores.ingredientes}
+                        <i className="fa-solid fa-circle-exclamation text-[10px]" aria-hidden="true" /> {errores.ingredientes}
                     </p>
                 )}
             </div>
 
-            {/* Sección 4: Pasos */}
+            {/* Pasos */}
             <div>
                 <div className="flex items-center justify-between mb-2">
                     <label className="flex items-center gap-1.5 text-xs font-bold" style={{ color: 'var(--texto-primario)' }}>
-                        <ListOrdered className="w-3.5 h-3.5" style={{ color: 'var(--color-primario)' }} />
+                        <i className="fa-solid fa-list-ol text-xs" style={{ color: 'var(--color-primario)' }} aria-hidden="true" />
                         <span>Protocolo de Preparación (Paso a Paso) *</span>
                     </label>
                     <button
@@ -509,7 +497,7 @@ const FormularioReceta = ({
                         onClick={agregarPaso}
                         className="btn-editar"
                     >
-                        <Plus className="w-3.5 h-3.5" />
+                        <i className="fa-solid fa-plus text-[10px]" aria-hidden="true" />
                         <span>Añadir paso</span>
                     </button>
                 </div>
@@ -527,18 +515,18 @@ const FormularioReceta = ({
                 </div>
                 {errores.pasos && (
                     <p className="text-[11px] mt-1.5 flex items-center gap-1" style={{ color: 'var(--color-error-texto)' }}>
-                        <AlertCircle className="w-3.5 h-3.5" /> {errores.pasos}
+                        <i className="fa-solid fa-circle-exclamation text-[10px]" aria-hidden="true" /> {errores.pasos}
                     </p>
                 )}
             </div>
 
-            {/* Footer del Formulario */}
+            {/* Acciones */}
             <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--borde-sutil)' }}>
                 <button type="button" className="btn-secundario" onClick={alCancelar} disabled={cargando}>
                     Cancelar
                 </button>
                 <button type="submit" className="btn-primario" disabled={cargando}>
-                    <CheckCircle2 className="w-4 h-4" />
+                    <i className="fa-solid fa-circle-check text-xs" aria-hidden="true" />
                     <span>
                         {cargando
                             ? 'Sincronizando...'
