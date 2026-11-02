@@ -4,21 +4,28 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 /**
- * Vista principal de la aplicación.
- * Muestra la presentación del proyecto con animaciones AOS,
- * sección hero, características y CTA al catálogo.
+ * Vista de presentación de GastroHub.
+ * Incluye Hero gastronómico, acceso rápido por categorías, pilares de la plataforma y CTA.
  */
 const InicioView = () => {
-    // Inicializar AOS solo en la vista de Inicio
     useEffect(() => {
         AOS.init({
-            duration: 700,
+            duration: 650,
             easing: 'ease-out-cubic',
             once: true,
-            offset: 60,
+            offset: 50,
         });
         return () => AOS.refresh();
     }, []);
+
+    const categoriasDestacadas = [
+        { nombre: 'Plato Fuerte', icono: '🍛', desc: 'Carnes, pastas, risottos y pesca' },
+        { nombre: 'Entrada', icono: '🍤', desc: 'Ceviches, tartares y aperitivos' },
+        { nombre: 'Postre', icono: '🍫', desc: 'Repostería de autor y dulces' },
+        { nombre: 'Ensalada', icono: '🥗', desc: 'Bowls frescos y cocina saludable' },
+        { nombre: 'Sopa', icono: '🍜', desc: 'Ramen, cremas y caldos lentos' },
+        { nombre: 'Bebida', icono: '🍹', desc: 'Coctelería sin alcohol e infusiones' },
+    ];
 
     const caracteristicas = [
         {
@@ -28,28 +35,28 @@ const InicioView = () => {
                 </svg>
             ),
             fondo: 'var(--color-salmon-claro)',
-            titulo: 'Organiza tus recetas',
-            descripcion: 'Registra, edita y consulta todas tus recetas en un solo lugar, con ingredientes y pasos detallados.',
+            titulo: 'Fichas Técnicas & Escalado',
+            descripcion: 'Registra ingredientes exactos, calorías, dificultad y ajusta dinámicamente el número de porciones recalculando cantidades al instante.',
         },
         {
             icono: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="#2980b9" strokeWidth={2}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="#1d5fa7" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
                 </svg>
             ),
             fondo: 'var(--color-celeste)',
-            titulo: 'Búsqueda inteligente',
-            descripcion: 'Filtra recetas por nombre, tiempo de preparación o cantidad de ingredientes en tiempo real.',
+            titulo: 'Filtros Multicriterio y Favoritos',
+            descripcion: 'Encuentra preparaciones al instante por nombre, ingrediente, categoría, nivel de dificultad, tiempo o colección de favoritos.',
         },
         {
             icono: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="#27ae60" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="var(--color-secundario)" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             ),
             fondo: 'var(--color-verde-menta)',
-            titulo: 'Control del tiempo',
-            descripcion: 'Visualiza el tiempo estimado de cada preparación para planificar mejor tu cocina.',
+            titulo: 'Modo Cocina Interactiva',
+            descripcion: 'Marca ingredientes y pasos completados en tiempo real mientras cocinas, o imprime la ficha técnica limpia con un clic.',
         },
     ];
 
@@ -58,76 +65,153 @@ const InicioView = () => {
             {/* ─── SECCIÓN HERO ─────────────────────────────────────────────── */}
             <section
                 className="relative overflow-hidden"
-                style={{ background: 'linear-gradient(135deg, var(--color-crema) 0%, var(--color-salmon-claro) 100%)', minHeight: '90vh' }}
+                style={{
+                    background: 'linear-gradient(135deg, var(--color-crema) 0%, var(--color-salmon-claro) 100%)',
+                    minHeight: '86vh',
+                }}
             >
-                {/* Elementos decorativos de fondo */}
                 <div
                     aria-hidden="true"
-                    className="absolute top-10 right-10 w-72 h-72 rounded-full opacity-30 blur-3xl"
+                    className="absolute top-10 right-10 w-80 h-80 rounded-full opacity-35 blur-3xl"
                     style={{ background: 'var(--color-rosa-pastel)' }}
                 />
                 <div
                     aria-hidden="true"
-                    className="absolute bottom-10 left-10 w-48 h-48 rounded-full opacity-20 blur-3xl"
-                    style={{ background: 'var(--color-lavanda)' }}
+                    className="absolute bottom-10 left-10 w-56 h-56 rounded-full opacity-25 blur-3xl"
+                    style={{ background: 'var(--color-ambar-claro)' }}
                 />
 
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-
-                    {/* Texto del Hero */}
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                    {/* Columna de texto */}
                     <div className="flex-1 flex flex-col gap-6 text-center lg:text-left" data-aos="fade-right">
-                        {/* Badge */}
                         <span
                             className="inline-flex items-center gap-2 self-center lg:self-start px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide"
-                            style={{ background: 'rgba(240,165,152,0.2)', color: 'var(--color-primario-hover)', border: '1.5px solid var(--color-primario)' }}
+                            style={{
+                                background: 'rgba(217, 93, 57, 0.12)',
+                                color: 'var(--color-primario-hover)',
+                                border: '1px solid rgba(217, 93, 57, 0.35)',
+                            }}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                            </svg>
-                            Sistema de Gestión Culinaria
+                            <span>✨</span>
+                            GastroHub Culinary Management System
                         </span>
 
                         <h1
-                            className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight"
+                            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight"
                             style={{ color: 'var(--color-texto-oscuro)' }}
                         >
-                            Tu recetario
-                            <br />
-                            <span style={{ color: 'var(--color-primario)' }}>digital</span>
-                            <br />
-                            profesional
+                            Estandariza y eleva tu{' '}
+                            <span style={{ color: 'var(--color-primario)' }}>cocina de autor</span>
                         </h1>
 
                         <p
-                            className="text-base sm:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0"
+                            className="text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0"
                             style={{ color: 'var(--color-texto-medio)' }}
                         >
-                            Gestiona, organiza y consulta todas tus recetas de cocina desde un solo lugar.
-                            Con búsqueda inteligente, filtros avanzados y un catálogo completo.
+                            Centraliza fichas técnicas de recetas, escala porciones en tiempo real,
+                            controla ingredientes y ejecuta cada preparación paso a paso con precisión profesional.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                            <Link to="/catalogo" className="btn-primario justify-center text-base px-6 py-3" style={{ textDecoration: 'none' }}>
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-1">
+                            <Link to="/catalogo" className="btn-primario justify-center text-base px-7 py-3.5" style={{ textDecoration: 'none' }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
-                                Explorar catálogo
+                                Explorar Catálogo Gourmet
                             </Link>
                             <a
                                 href="#caracteristicas"
-                                className="btn-secundario justify-center text-base px-6 py-3"
+                                className="btn-secundario justify-center text-base px-6 py-3.5"
                                 style={{ textDecoration: 'none' }}
                             >
-                                Conocer más
+                                Conocer Arquitectura
                             </a>
                         </div>
+
+                        {/* Indicadores rápidos de valor */}
+                        <div className="grid grid-cols-3 gap-4 pt-4 border-t mt-2" style={{ borderColor: 'rgba(31, 29, 26, 0.08)' }}>
+                            <div>
+                                <p className="text-2xl font-extrabold" style={{ color: 'var(--color-texto-oscuro)' }}>100%</p>
+                                <p className="text-xs" style={{ color: 'var(--color-texto-medio)' }}>Escalado de porciones</p>
+                            </div>
+                            <div>
+                                <p className="text-2xl font-extrabold" style={{ color: 'var(--color-primario)' }}>8+</p>
+                                <p className="text-xs" style={{ color: 'var(--color-texto-medio)' }}>Categorías culinarias</p>
+                            </div>
+                            <div>
+                                <p className="text-2xl font-extrabold" style={{ color: 'var(--color-secundario)' }}>REST API</p>
+                                <p className="text-xs" style={{ color: 'var(--color-texto-medio)' }}>Validación estricta</p>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex-1 flex justify-center items-center w-full" data-aos="fade-left" data-aos-delay="150">
-                        <img
-                           src="../../../public/img/hero_icon_2.png"
-                           alt="Ingredientes frescos sobre tabla de cocina"
-                           className="w-full h-full object-cover rounded-3xl shadow-xl"
-                        />
+
+                    {/* Imagen Hero corregida para Vite (/img/hero_icon_2.png) */}
+                    <div className="flex-1 flex justify-center items-center w-full" data-aos="fade-left" data-aos-delay="120">
+                        <div className="relative w-full max-w-lg">
+                            <img
+                                src="/img/hero_icon_2.png"
+                                alt="Mesa gastronómica con ingredientes frescos de GastroHub"
+                                className="w-full h-full object-cover rounded-3xl shadow-2xl border-4 border-white"
+                            />
+                            <div
+                                className="hidden sm:flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg absolute -bottom-5 -left-5 border"
+                                style={{ background: '#fff', borderColor: 'var(--color-borde)' }}
+                            >
+                                <span className="text-2xl">👨‍🍳</span>
+                                <div>
+                                    <p className="text-xs font-bold" style={{ color: 'var(--color-texto-oscuro)' }}>
+                                        Mise en Place Digital
+                                    </p>
+                                    <p className="text-[11px]" style={{ color: 'var(--color-texto-medio)' }}>
+                                        Control de tiempos, calorías y pasos
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ─── CATEGORÍAS RÁPIDAS ────────────────────────────────────────── */}
+            <section className="py-16 border-b" style={{ background: '#fff', borderColor: 'var(--color-borde)' }}>
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4" data-aos="fade-up">
+                        <div>
+                            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--color-primario)' }}>
+                                Colecciones
+                            </span>
+                            <h2 className="text-2xl sm:text-3xl font-bold mt-1" style={{ color: 'var(--color-texto-oscuro)' }}>
+                                Explora por categoría gastronómica
+                            </h2>
+                        </div>
+                        <Link
+                            to="/catalogo"
+                            className="text-sm font-semibold hover:underline"
+                            style={{ color: 'var(--color-primario)', textDecoration: 'none' }}
+                        >
+                            Ver todas las recetas →
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                        {categoriasDestacadas.map((cat, idx) => (
+                            <Link
+                                key={cat.nombre}
+                                to={`/catalogo?categoria=${encodeURIComponent(cat.nombre)}`}
+                                className="tarjeta p-4 flex flex-col items-center text-center gap-2 hover:-translate-y-1 transition-transform"
+                                style={{ textDecoration: 'none' }}
+                                data-aos="fade-up"
+                                data-aos-delay={idx * 60}
+                            >
+                                <span className="text-3xl">{cat.icono}</span>
+                                <span className="text-sm font-bold" style={{ color: 'var(--color-texto-oscuro)' }}>
+                                    {cat.nombre}
+                                </span>
+                                <span className="text-[11px] leading-snug" style={{ color: 'var(--color-texto-medio)' }}>
+                                    {cat.desc}
+                                </span>
+                            </Link>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -136,26 +220,24 @@ const InicioView = () => {
             <section
                 id="caracteristicas"
                 className="py-20"
-                style={{ background: '#fff' }}
+                style={{ background: 'var(--color-crema)' }}
             >
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Encabezado de sección */}
                     <div className="text-center mb-14" data-aos="fade-up">
                         <span
                             className="text-xs font-semibold uppercase tracking-widest"
                             style={{ color: 'var(--color-primario)' }}
                         >
-                            Funcionalidades
+                            Ingeniería Culinaria
                         </span>
                         <h2 className="text-3xl sm:text-4xl font-bold mt-2" style={{ color: 'var(--color-texto-oscuro)' }}>
-                            Todo lo que necesitas
+                            Diseñado para cocinas exigentes
                         </h2>
                         <p className="mt-3 text-base max-w-xl mx-auto" style={{ color: 'var(--color-texto-medio)' }}>
-                            Una plataforma completa para gestionar el inventario de recetas de tu cocina.
+                            Mucho más que un formulario: una suite completa de estandarización gastronómica.
                         </p>
                     </div>
 
-                    {/* Tarjetas de características */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {caracteristicas.map((item, idx) => (
                             <div
@@ -170,7 +252,7 @@ const InicioView = () => {
                                 >
                                     {item.icono}
                                 </div>
-                                <h3 className="text-base font-semibold" style={{ color: 'var(--color-texto-oscuro)' }}>
+                                <h3 className="text-base font-bold" style={{ color: 'var(--color-texto-oscuro)' }}>
                                     {item.titulo}
                                 </h3>
                                 <p className="text-sm leading-relaxed" style={{ color: 'var(--color-texto-medio)' }}>
@@ -185,27 +267,27 @@ const InicioView = () => {
             {/* ─── CTA FINAL ─────────────────────────────────────────────────── */}
             <section
                 className="py-20"
-                style={{ background: 'linear-gradient(135deg, var(--color-crema) 0%, var(--color-lavanda) 100%)' }}
+                style={{ background: 'linear-gradient(135deg, var(--color-salmon-claro) 0%, var(--color-ambar-claro) 100%)' }}
             >
                 <div
                     className="max-w-2xl mx-auto px-4 flex flex-col items-center text-center gap-6"
                     data-aos="zoom-in"
                 >
                     <h2 className="text-3xl font-bold" style={{ color: 'var(--color-texto-oscuro)' }}>
-                        ¿Listo para explorar?
+                        ¿Listo para gestionar tu catálogo gastronómico?
                     </h2>
                     <p className="text-base" style={{ color: 'var(--color-texto-medio)' }}>
-                        Accede al catálogo completo de recetas y empieza a gestionar tu cocina de manera profesional.
+                        Explora nuestras recetas de autor pre-cargadas, prueba el escalador de porciones o registra tus propias creaciones.
                     </p>
                     <Link
                         to="/catalogo"
-                        className="btn-primario text-base px-8 py-3"
+                        className="btn-primario text-base px-8 py-3.5"
                         style={{ textDecoration: 'none' }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
-                        Ir al catálogo
+                        Ir al Catálogo de GastroHub
                     </Link>
                 </div>
             </section>

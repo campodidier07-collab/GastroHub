@@ -1,7 +1,9 @@
 {
-  "name": "frontend-react",
+  "name": "gastrohub-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
+  "description": "SPA para GastroHub — Plataforma culinaria moderna para gestión de recetas e inventario gastronómico",
+  "author": "Didier Puentes <campodidier07@gmail.com>",
   "type": "module",
   "scripts": {
     "dev": "vite",

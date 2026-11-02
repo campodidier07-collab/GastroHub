@@ -21,6 +21,15 @@ export const obtenerRecetas = async () => {
 };
 
 /**
+ * Obtener estadísticas globales del catálogo.
+ * @returns {Promise<Object>} KPIs del catálogo.
+ */
+export const obtenerEstadisticasRecetas = async () => {
+    const respuesta = await clienteHttp.get('/estadisticas');
+    return respuesta.data;
+};
+
+/**
  * Obtener una receta por su ID.
  * @param {string} id - ID de la receta en MongoDB.
  * @returns {Promise<Object>} Receta encontrada.
@@ -48,6 +57,27 @@ export const crearReceta = async (datosReceta) => {
  */
 export const actualizarReceta = async (id, datosActualizados) => {
     const respuesta = await clienteHttp.patch(`/${id}`, datosActualizados);
+    return respuesta.data;
+};
+
+/**
+ * Reemplazar completamente una receta existente (PUT).
+ * @param {string} id - ID de la receta.
+ * @param {Object} datosReemplazo - Receta completa.
+ * @returns {Promise<Object>} Receta reemplazada.
+ */
+export const reemplazarReceta = async (id, datosReemplazo) => {
+    const respuesta = await clienteHttp.put(`/${id}`, datosReemplazo);
+    return respuesta.data;
+};
+
+/**
+ * Alternar estado de favorito de una receta (PATCH /:id/favorito).
+ * @param {string} id - ID de la receta.
+ * @returns {Promise<Object>} Receta actualizada.
+ */
+export const alternarFavoritoReceta = async (id) => {
+    const respuesta = await clienteHttp.patch(`/${id}/favorito`);
     return respuesta.data;
 };
 

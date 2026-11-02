@@ -1,76 +1,106 @@
+const CATEGORIAS = [
+    'Entrada',
+    'Plato Fuerte',
+    'Postre',
+    'Bebida',
+    'Ensalada',
+    'Sopa',
+    'Snack',
+    'Otro',
+];
+
+const DIFICULTADES = ['Fácil', 'Media', 'Alta'];
+
 /**
- * Panel de filtros para el catálogo de recetas.
- * @param {Object} filtros - Estado actual de los filtros.
- * @param {Function} alCambiarFiltros - Callback para actualizar los filtros.
- * @param {Function} alLimpiar - Callback para limpiar todos los filtros.
+ * Panel avanzado de filtros multicriterio para el catálogo de GastroHub.
  */
 const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
     const hayFiltrosActivos =
         filtros.busqueda ||
+        filtros.categoria ||
+        filtros.dificultad ||
         filtros.tiempoFiltro ||
         filtros.minIngredientes !== '' ||
+        filtros.soloFavoritas ||
         filtros.ordenar !== 'reciente';
 
     return (
         <div
-            className="tarjeta p-4 mb-5"
-            style={{ background: 'var(--color-gris-suave)', border: '1px solid var(--color-borde)' }}
+            className="tarjeta p-4 sm:p-5 mb-6"
+            style={{ background: '#fff', border: '1px solid var(--color-borde)' }}
         >
-            <div className="flex flex-wrap gap-3 items-end">
-
-                {/* Buscador en tiempo real */}
-                <div className="flex-1 min-w-[200px]">
-                    <label className="block text-xs font-medium mb-1" style={{ color: 'var(--color-texto-medio)' }}>
-                        Buscar receta
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+                {/* Buscador multicriterio */}
+                <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold mb-1" style={{ color: 'var(--color-texto-medio)' }}>
+                        Buscar receta o ingrediente
                     </label>
                     <input
                         type="text"
                         value={filtros.busqueda}
                         onChange={(e) => alCambiarFiltros({ busqueda: e.target.value })}
-                        placeholder="Nombre de la receta..."
+                        placeholder="Ej: Risotto, trufa, salmón, chocolate..."
                         className="input-global"
                     />
                 </div>
 
-                {/* Tiempo (contiene texto) */}
-                <div className="w-40">
-                    <label className="block text-xs font-medium mb-1" style={{ color: 'var(--color-texto-medio)' }}>
+                {/* Categoría */}
+                <div>
+                    <label className="block text-xs font-semibold mb-1" style={{ color: 'var(--color-texto-medio)' }}>
+                        Categoría
+                    </label>
+                    <select
+                        value={filtros.categoria || ''}
+                        onChange={(e) => alCambiarFiltros({ categoria: e.target.value })}
+                        className="input-global cursor-pointer"
+                    >
+                        <option value="">Todas</option>
+                        {CATEGORIAS.map((cat) => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Dificultad */}
+                <div>
+                    <label className="block text-xs font-semibold mb-1" style={{ color: 'var(--color-texto-medio)' }}>
+                        Dificultad
+                    </label>
+                    <select
+                        value={filtros.dificultad || ''}
+                        onChange={(e) => alCambiarFiltros({ dificultad: e.target.value })}
+                        className="input-global cursor-pointer"
+                    >
+                        <option value="">Todas</option>
+                        {DIFICULTADES.map((dif) => (
+                            <option key={dif} value={dif}>{dif}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Tiempo o Mín. ingredientes */}
+                <div>
+                    <label className="block text-xs font-semibold mb-1" style={{ color: 'var(--color-texto-medio)' }}>
                         Tiempo (contiene)
                     </label>
                     <input
                         type="text"
                         value={filtros.tiempoFiltro || ''}
                         onChange={(e) => alCambiarFiltros({ tiempoFiltro: e.target.value })}
-                        placeholder="Ej: 30 min"
-                        className="input-global"
-                    />
-                </div>
-
-                {/* Mínimo de ingredientes */}
-                <div className="w-44">
-                    <label className="block text-xs font-medium mb-1" style={{ color: 'var(--color-texto-medio)' }}>
-                        Mín. ingredientes
-                    </label>
-                    <input
-                        type="number"
-                        min="0"
-                        value={filtros.minIngredientes}
-                        onChange={(e) => alCambiarFiltros({ minIngredientes: e.target.value })}
-                        placeholder="Ej: 3"
+                        placeholder="Ej: 25 min"
                         className="input-global"
                     />
                 </div>
 
                 {/* Ordenar por */}
-                <div className="w-44">
-                    <label className="block text-xs font-medium mb-1" style={{ color: 'var(--color-texto-medio)' }}>
+                <div>
+                    <label className="block text-xs font-semibold mb-1" style={{ color: 'var(--color-texto-medio)' }}>
                         Ordenar por
                     </label>
                     <select
                         value={filtros.ordenar}
                         onChange={(e) => alCambiarFiltros({ ordenar: e.target.value })}
                         className="input-global cursor-pointer"
-                        style={{ appearance: 'auto' }}
                     >
                         <option value="reciente">Más reciente</option>
                         <option value="antiguo">Más antiguo</option>
@@ -78,21 +108,54 @@ const FiltrosRecetas = ({ filtros, alCambiarFiltros, alLimpiar }) => {
                         <option value="titulo_za">Título Z-A</option>
                         <option value="mas_ingredientes">Más ingredientes</option>
                         <option value="menos_ingredientes">Menos ingredientes</option>
+                        <option value="menos_calorias">Menor calorías</option>
                     </select>
                 </div>
+            </div>
 
-                {/* Botón limpiar filtros */}
+            {/* Barra secundaria: Mínimo de ingredientes + chip Favoritas + Limpiar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 mt-3 pt-3 border-t" style={{ borderColor: 'var(--color-borde)' }}>
+                <div className="flex flex-wrap items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={() => alCambiarFiltros({ soloFavoritas: !filtros.soloFavoritas })}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border flex items-center gap-1.5 cursor-pointer"
+                        style={{
+                            background: filtros.soloFavoritas ? 'var(--color-ambar-claro)' : 'var(--color-gris-suave)',
+                            color: filtros.soloFavoritas ? '#b45309' : 'var(--color-texto-medio)',
+                            borderColor: filtros.soloFavoritas ? '#f59e0b' : 'var(--color-borde)',
+                        }}
+                    >
+                        <span>{filtros.soloFavoritas ? '★' : '☆'}</span>
+                        Solo Favoritas
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium" style={{ color: 'var(--color-texto-medio)' }}>
+                            Mín. ingredientes:
+                        </span>
+                        <input
+                            type="number"
+                            min="0"
+                            value={filtros.minIngredientes}
+                            onChange={(e) => alCambiarFiltros({ minIngredientes: e.target.value })}
+                            placeholder="0"
+                            className="w-16 px-2.5 py-1 text-xs rounded-lg border bg-white"
+                            style={{ borderColor: 'var(--color-borde)' }}
+                        />
+                    </div>
+                </div>
+
                 {hayFiltrosActivos && (
                     <button
                         onClick={alLimpiar}
-                        className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-colors"
-                        style={{ background: '#fde8e8', color: '#c0392b', border: '1px solid #f5c6c6' }}
-                        title="Limpiar todos los filtros"
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                        style={{ background: '#fde8e8', color: '#b91c1c', border: '1px solid #f8c9c9' }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                        Limpiar
+                        Limpiar filtros
                     </button>
                 )}
             </div>
